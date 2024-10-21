@@ -89,11 +89,11 @@ public class MecanumDrive extends LinearOpMode {
             beaUtils.pushDrivetrainPower(frontLeftPower,backLeftPower,frontRightPower,backRightPower);
 
             //slideMotor TESTING
-            if (beaUtils.triggerBoolean(gamepad1.left_trigger)) { //Start moving servo to position 0
+            if (beaUtils.triggerBoolean(gamepad1.left_trigger)) {
                 slideMotor.setPower(1);
                 uplink("SlideMotor","Power FORWARD");
             }
-            else if (beaUtils.triggerBoolean(gamepad1.right_trigger)) { //Start moving servo to position 1
+            else if (beaUtils.triggerBoolean(gamepad1.right_trigger)) {
                 slideMotor.setPower(-1);
                 uplink("SlideMotor", "Power REVERSE");
             }
