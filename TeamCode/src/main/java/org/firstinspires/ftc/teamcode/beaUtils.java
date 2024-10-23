@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import java.util.Random;
 
 public class beaUtils {
@@ -32,6 +34,9 @@ public class beaUtils {
         return voiceLines[rand.nextInt(voiceLines.length)]; //Grabs from a random position in the list
     }
 
+    public static double scoopEncoderPos(DcMotor motor) {
+        return motor.getCurrentPosition();
+    }
     public static boolean triggerBoolean(double triggerValue) {
         //Compares the float value to threshold
         final double threshold = .1;
