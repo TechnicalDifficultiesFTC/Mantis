@@ -55,8 +55,11 @@ public class TelemetryCache {
     public String compileTelemetryCache() {
         StringBuilder compiledTelemetry = new StringBuilder();
         compiledTelemetry.append("MOTM: ").append(MOTM).append("\n");
-        for (int i = 0; i < (telemetryCache.length-1); ++i) {
-            compiledTelemetry.append("\n").append(telemetryCache[i]);
+        for (String messageData : telemetryCache) {
+            if (messageData == null) {
+                continue;
+            }
+            compiledTelemetry.append("\n").append(messageData);
         }
         return compiledTelemetry+"\n______________________________________________";
     }

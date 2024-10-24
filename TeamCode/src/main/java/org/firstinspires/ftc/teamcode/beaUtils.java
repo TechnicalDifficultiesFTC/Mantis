@@ -42,6 +42,7 @@ public class beaUtils {
     public static double scoopEncoderDegree(MotorInformation motorInformation) {
         double encoderRevolutions = scoopEncoderRevolutions(motorInformation.getMotor(),motorInformation.getPPR());
         double angle = encoderRevolutions * 360;
+        //Lowkey got this off of gm0, review this logic b4 deploying
         return angle % 360; //Normalize angle
     }
     public static int pinkArmEncoderToDegreeConversion(MotorInformation motorInformation) {
