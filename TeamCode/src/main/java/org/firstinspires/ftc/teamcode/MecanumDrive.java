@@ -40,9 +40,12 @@ public class MecanumDrive extends LinearOpMode {
         frontRightMotor = hardwareMap.dcMotor.get("FRM");
         backRightMotor = hardwareMap.dcMotor.get("BRM");
         towerMotor = hardwareMap.dcMotor.get("shaftMotor");
-
+        //This guy doesn't really need to be field </3
         DcMotor slideMotor = hardwareMap.dcMotor.get("slideMotor");
-        //DcMotor climbMotor = hardwareMap.dcMotor.get("climbMotor");
+
+        //Motor information mapping (only really necessary if doing stuff w/ encoders)
+        MotorInformation towerMotorInformation = new MotorInformation(towerMotor,5281.1);
+        MotorInformation slideMotorInformation = new MotorInformation(slideMotor,587.7);
 
         //Non-motor bindings
         CRServo intakeServo = hardwareMap.crservo.get("intakeServo");
@@ -52,7 +55,6 @@ public class MecanumDrive extends LinearOpMode {
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Should I set the whole drivetrain to brake?
-        //climbMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Refresh encoder values to 0 at current position
@@ -79,7 +81,8 @@ public class MecanumDrive extends LinearOpMode {
         while (opModeIsActive()) { //Primary loop
 
             power_limiter = low_power_mode ? limitingValue : 1;
-            double towerEncoderPos = beaUtils.scoopEncoderPos(towerMotor);
+            double towerEncoderPos = beaUtils.pinkArmEncoderToDegreeConversion(towerMotorInformation);
+            double slideEncoderPos = beaUtils.pinkArmEncoderToDegreeConversion(slideMotorInformation);
 
             //IF low power mode is active set value of power limiter to 2, if not keep it as 1
             //Values get divided by low power mode, so having it active cuts speeds in half
@@ -147,7 +150,8 @@ public class MecanumDrive extends LinearOpMode {
                 intakeServo.setPower(0);
             }
 
-            uplink("EncoderPos", Double.toString(towerEncoderPos));
+            uplink("EncoderPos", "Tower Encoder Position: "+ towerEncoderPos+
+            "\nSlide Encoder Position: "+slideEncoderPos);
         }
     }
 }
