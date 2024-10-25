@@ -27,8 +27,8 @@ public class beaUtils {
                 "Welcome back, cockpit cooling reactivated.",
                 "Ad Astra Per Aspera",
                 ":3c",
-                "No technical difficulties detected!",
-                "You got the sun on the moon"
+                "No Technical Difficulties detected!",
+                "You got the sun on the moon",
         };
         return voiceLines[rand.nextInt(voiceLines.length)]; //Grabs from a random position in the list
     }
@@ -44,6 +44,10 @@ public class beaUtils {
         double angle = encoderRevolutions * 360;
         //Lowkey got this off of gm0, review this logic b4 deploying
         return angle % 360; //Normalize angle
+    }
+
+    public static double getAngularMomentum(double revolutions, double timeframeSeconds) {
+        Math
     }
     public static int pinkArmEncoderToDegreeConversion(MotorInformation motorInformation) {
         double currentPinkArmDegrees;

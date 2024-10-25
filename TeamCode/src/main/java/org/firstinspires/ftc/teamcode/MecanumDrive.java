@@ -16,7 +16,7 @@ public class MecanumDrive extends LinearOpMode {
     String slideMotorInit = "SlideMotor: Offline";
     String servoInit = "Servo: Offline";
     String powerStatus = "Power: Asleep";
-    TelemetryCache cache = new TelemetryCache(MOTM,overviewInit,slideMotorInit,servoInit,powerStatus);
+    TelemetryCache cache = new TelemetryCache(MOTM,5);
     void uplink (String specifier, String message) {
         cache.updateTelemetryCache(specifier, message);
         telemetry.addData("LOG =", cache.compileTelemetryCache());
@@ -170,7 +170,7 @@ public class MecanumDrive extends LinearOpMode {
             }
 
             uplink("EncoderPos", "Tower Encoder Position: "+ towerEncoderPos+
-            "\nSlide Encoder Position: "+slideEncoderPos);
+            "\nSlide Encoder Position: " + slideEncoderPos);
         }
     }
 }
