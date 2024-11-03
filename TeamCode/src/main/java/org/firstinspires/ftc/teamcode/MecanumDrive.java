@@ -12,11 +12,7 @@ public class MecanumDrive extends LinearOpMode {
     //Initialize global variables and local functions
     //By global variables I mean ONLY variables that are gonna get accessed by beaUtils/other classes, not finals and stuff
     public String MOTM = beaUtils.generateVoiceLine();
-    String overviewInit = "Overview: Greetings Programs";
-    String slideMotorInit = "SlideMotor: Offline";
-    String servoInit = "Servo: Offline";
-    String powerStatus = "Power: Asleep";
-    TelemetryCache cache = new TelemetryCache(MOTM,overviewInit,slideMotorInit,servoInit,powerStatus);
+    TelemetryCache cache = new TelemetryCache(MOTM,20);
     void uplink (String specifier, String message) {
         cache.updateTelemetryCache(specifier, message);
         telemetry.addData("LOG =", cache.compileTelemetryCache());
@@ -28,7 +24,6 @@ public class MecanumDrive extends LinearOpMode {
     public static DcMotor backLeftMotor;
     public static DcMotor frontRightMotor;
     public static DcMotor backRightMotor;
-    public static DcMotor towerMotor;
     final double limitingValue = 3;
     //Set between [1,inf), all motor power variables will be divided by this value when low power mode is active
     @Override
@@ -39,10 +34,21 @@ public class MecanumDrive extends LinearOpMode {
         backLeftMotor = hardwareMap.dcMotor.get("BLM");
         frontRightMotor = hardwareMap.dcMotor.get("FRM");
         backRightMotor = hardwareMap.dcMotor.get("BRM");
-        towerMotor = hardwareMap.dcMotor.get("shaftMotor");
-
+        //These guys doesn't really need to be fields </3
+        DcMotor towerMotor = hardwareMap.dcMotor.get("towerMotor");
         DcMotor slideMotor = hardwareMap.dcMotor.get("slideMotor");
-        //DcMotor climbMotor = hardwareMap.dcMotor.get("climbMotor");
+
+        //Refresh encoder values to 0 at current position
+        towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //omgomgomgomg
+        towerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        //Motor information mapping (only really necessary if doing stuff w/ encoders)
+        MotorInformation towerMotorInformation = new MotorInformation(towerMotor,5281.1);
+        MotorInformation slideMotorInformation = new MotorInformation(slideMotor,587.7);
 
         //Non-motor bindings
         CRServo intakeServo = hardwareMap.crservo.get("intakeServo");
@@ -52,19 +58,15 @@ public class MecanumDrive extends LinearOpMode {
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Should I set the whole drivetrain to brake?
-        //climbMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        //Refresh encoder values to 0 at current position
-        towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         waitForStart();
 
         if (isStopRequested()) return;
 
-        //(Default) Variables that can be initialized OUTSIDE of the loop (so like not redefined a million billion times over)
+        //(Default) Variables that can be declared outside of the main loop
         boolean low_power_mode = false;
+
         double power_limiter;
         double y;
         double x;
@@ -74,20 +76,31 @@ public class MecanumDrive extends LinearOpMode {
         double backLeftPower;
         double frontRightPower;
         double backRightPower;
+        double towerEncoderPos;
+        double slideEncoderPos;
+        double pinkArmSlideMotorPower;
+        double climbArmsMotorsPower;
         uplink("Overview", "All components successfully initialized!");
 
         while (opModeIsActive()) { //Primary loop
 
-            power_limiter = low_power_mode ? limitingValue : 1;
-            double towerEncoderPos = beaUtils.scoopEncoderPos(towerMotor);
-
-            //IF low power mode is active set value of power limiter to 2, if not keep it as 1
+            //IF low power mode is active set value of power limiter to limiting value, if not keep it as 1
             //Values get divided by low power mode, so having it active cuts speeds in half
+            power_limiter = low_power_mode ? limitingValue : 1;
 
+            //Measure encoder positions
+            towerEncoderPos = beaUtils.pinkArmEncoderToDegreeConversion(towerMotorInformation)/4;
+            slideEncoderPos = beaUtils.pinkArmEncoderToDegreeConversion(slideMotorInformation) /4;
+
+            //Joystick polling
+            //Driver Controls - Drivetrain
             y = -gamepad1.left_stick_y; //y stick inverted
             x = gamepad1.left_stick_x * 1.1; //counteract imperfect strafing
             rx = -gamepad1.right_stick_x;
 
+            pinkArmSlideMotorPower = gamepad2.left_stick_y;
+            climbArmsMotorsPower = gamepad2.right_stick_y;
+            
             //Handle calculations for each motor in separate variables
             denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1); //Prevent division by 0 by making sure absolute values stay above 1? (I think?)
             frontLeftPower = ((y + x + rx) / denominator)/ power_limiter;
@@ -99,6 +112,8 @@ public class MecanumDrive extends LinearOpMode {
             beaUtils.pushDrivetrainPower(frontLeftPower,backLeftPower,frontRightPower,backRightPower);
 
             //slideMotor TESTING
+            slideMotor.setPower(pinkArmSlideMotorPower);
+
             if (beaUtils.triggerBoolean(gamepad1.left_trigger)) {
                 slideMotor.setPower(1);
                 uplink("SlideMotor","Power FORWARD");
@@ -113,17 +128,18 @@ public class MecanumDrive extends LinearOpMode {
             }
 
             //towerMotor TESTING
+
             if (beaUtils.triggerBoolean(gamepad2.left_trigger)) { //Start moving servo to position 0
                 towerMotor.setPower(1);
-                uplink("towerMotor","Power FORWARD");
+                uplink("towerMotor","Power FORWARD: "+ towerMotor.getPower());
             }
             else if (beaUtils.triggerBoolean(gamepad2.right_trigger)) { //Start moving servo to position 1
                 towerMotor.setPower(-1);
-                uplink("towerMotor", "Power REVERSE");
+                uplink("towerMotor", "Power REVERSE: "+ towerMotor.getPower());
             }
             else {
                 towerMotor.setPower(0);
-                uplink("towerMotor","Power NEUTRAL");
+                uplink("towerMotor","Power NEUTRAL: "+ towerMotor.getPower());
             }
 
             //Button triggers
@@ -147,7 +163,8 @@ public class MecanumDrive extends LinearOpMode {
                 intakeServo.setPower(0);
             }
 
-            uplink("EncoderPos", Double.toString(towerEncoderPos));
+            uplink("EncoderLog", "Tower Encoder Position: "+ towerEncoderPos+
+            "\nSlide Encoder Position: " + slideEncoderPos);
         }
     }
 }

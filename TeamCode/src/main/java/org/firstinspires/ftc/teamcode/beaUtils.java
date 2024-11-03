@@ -25,22 +25,40 @@ public class beaUtils {
                 "“The sword is yours”",
                 "“Pilot, you are outnumbered by hostile titans, focus your fire on the weakest target.”",
                 "Welcome back, cockpit cooling reactivated.",
-                "I'm trying to figure out how to move the axle!!",
-                "Tanky motor",
+                "Ad Astra Per Aspera",
                 ":3c",
-                "No technical difficulties detected!",
-                "You got the sun on the moon"
+                "No Technical Difficulties detected!",
+                "You got the sun on the moon",
         };
         return voiceLines[rand.nextInt(voiceLines.length)]; //Grabs from a random position in the list
     }
 
-    public static double scoopEncoderPos(DcMotor motor) {
-        return motor.getCurrentPosition();
+    public static double scoopEncoderRevolutions(double encoderTicks, double PPR) {
+        final double CPR = PPR * 4;
+        return encoderTicks/CPR; //Motor revolutions
+    }
+
+    public static double scoopEncoderDegree(MotorInformation motorInformation) {
+        double encoderRevolutions = scoopEncoderRevolutions(motorInformation.getMotor().getCurrentPosition(),motorInformation.getPPR());
+        double angle = encoderRevolutions * 360;
+        //Lowkey got this off of gm0, review this logic b4 deploying
+        return angle % 360; //Normalize angle
+    }
+
+    public static double pinkArmEncoderToDegreeConversion(MotorInformation motorInformation) {
+        //Gets motor revolutions
+        double currentMotorRevolutions = scoopEncoderRevolutions(motorInformation.getMotor().getCurrentPosition() , motorInformation.getPPR());
+        //Account for 3:1 gear ratio
+        double pinkArmRevolutions = currentMotorRevolutions / 3;
+        //Turn into revs
+        double pinkArmAngle = pinkArmRevolutions * 360;
+        //Normalize angle
+        return pinkArmAngle % 360;
     }
     public static boolean triggerBoolean(double triggerValue) {
         //Compares the float value to threshold
         final double threshold = .1;
-        return (triggerValue > threshold); //Evaluates this statement, then returns true if trigger has passed the threshold, false if it hasn't
+        return (triggerValue > threshold);
     }
 
 }
