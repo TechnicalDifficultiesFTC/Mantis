@@ -12,11 +12,7 @@ public class MecanumDrive extends LinearOpMode {
     //Initialize global variables and local functions
     //By global variables I mean ONLY variables that are gonna get accessed by beaUtils/other classes, not finals and stuff
     public String MOTM = beaUtils.generateVoiceLine();
-    String overviewInit = "Overview: Greetings Programs";
-    String slideMotorInit = "SlideMotor: Offline";
-    String servoInit = "Servo: Offline";
-    String powerStatus = "Power: Asleep";
-    TelemetryCache cache = new TelemetryCache(MOTM,5);
+    TelemetryCache cache = new TelemetryCache(MOTM,20);
     void uplink (String specifier, String message) {
         cache.updateTelemetryCache(specifier, message);
         telemetry.addData("LOG =", cache.compileTelemetryCache());
@@ -39,8 +35,16 @@ public class MecanumDrive extends LinearOpMode {
         frontRightMotor = hardwareMap.dcMotor.get("FRM");
         backRightMotor = hardwareMap.dcMotor.get("BRM");
         //These guys doesn't really need to be fields </3
-        DcMotor towerMotor = hardwareMap.dcMotor.get("shaftMotor");
+        DcMotor towerMotor = hardwareMap.dcMotor.get("towerMotor");
         DcMotor slideMotor = hardwareMap.dcMotor.get("slideMotor");
+
+        //Refresh encoder values to 0 at current position
+        towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //omgomgomgomg
+        towerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //Motor information mapping (only really necessary if doing stuff w/ encoders)
         MotorInformation towerMotorInformation = new MotorInformation(towerMotor,5281.1);
@@ -56,16 +60,13 @@ public class MecanumDrive extends LinearOpMode {
         //Should I set the whole drivetrain to brake?
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //Refresh encoder values to 0 at current position
-        towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         waitForStart();
 
         if (isStopRequested()) return;
 
         //(Default) Variables that can be declared outside of the main loop
         boolean low_power_mode = false;
+
         double power_limiter;
         double y;
         double x;
@@ -88,8 +89,8 @@ public class MecanumDrive extends LinearOpMode {
             power_limiter = low_power_mode ? limitingValue : 1;
 
             //Measure encoder positions
-            towerEncoderPos = beaUtils.pinkArmEncoderToDegreeConversion(towerMotorInformation);
-            slideEncoderPos = beaUtils.pinkArmEncoderToDegreeConversion(slideMotorInformation);
+            towerEncoderPos = beaUtils.pinkArmEncoderToDegreeConversion(towerMotorInformation)/4;
+            slideEncoderPos = beaUtils.pinkArmEncoderToDegreeConversion(slideMotorInformation) /4;
 
             //Joystick polling
             //Driver Controls - Drivetrain
@@ -99,7 +100,7 @@ public class MecanumDrive extends LinearOpMode {
 
             pinkArmSlideMotorPower = gamepad2.left_stick_y;
             climbArmsMotorsPower = gamepad2.right_stick_y;
-
+            
             //Handle calculations for each motor in separate variables
             denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1); //Prevent division by 0 by making sure absolute values stay above 1? (I think?)
             frontLeftPower = ((y + x + rx) / denominator)/ power_limiter;
@@ -112,40 +113,33 @@ public class MecanumDrive extends LinearOpMode {
 
             //slideMotor TESTING
             slideMotor.setPower(pinkArmSlideMotorPower);
-            if (slideMotor.getPower() > 0) {
+
+            if (beaUtils.triggerBoolean(gamepad1.left_trigger)) {
+                slideMotor.setPower(1);
                 uplink("SlideMotor","Power FORWARD");
             }
-            else if (slideMotor.getPower() < 0) {
-                uplink("SlideMotor","Power REVERSE");
+            else if (beaUtils.triggerBoolean(gamepad1.right_trigger)) {
+                slideMotor.setPower(-1);
+                uplink("SlideMotor", "Power REVERSE");
             }
             else {
-                uplink("SlideMotor","Power INACTIVE");
+                slideMotor.setPower(0);
+                uplink("SlideMotor","Power NEUTRAL");
             }
-//            if (beaUtils.triggerBoolean(gamepad1.left_trigger)) {
-//                slideMotor.setPower(1);
-//                uplink("SlideMotor","Power FORWARD");
-//            }
-//            else if (beaUtils.triggerBoolean(gamepad1.right_trigger)) {
-//                slideMotor.setPower(-1);
-//                uplink("SlideMotor", "Power REVERSE");
-//            }
-//            else {
-//                slideMotor.setPower(0);
-//                uplink("SlideMotor","Power NEUTRAL");
-//            }
 
             //towerMotor TESTING
+
             if (beaUtils.triggerBoolean(gamepad2.left_trigger)) { //Start moving servo to position 0
                 towerMotor.setPower(1);
-                uplink("towerMotor","Power FORWARD");
+                uplink("towerMotor","Power FORWARD: "+ towerMotor.getPower());
             }
             else if (beaUtils.triggerBoolean(gamepad2.right_trigger)) { //Start moving servo to position 1
                 towerMotor.setPower(-1);
-                uplink("towerMotor", "Power REVERSE");
+                uplink("towerMotor", "Power REVERSE: "+ towerMotor.getPower());
             }
             else {
                 towerMotor.setPower(0);
-                uplink("towerMotor","Power NEUTRAL");
+                uplink("towerMotor","Power NEUTRAL: "+ towerMotor.getPower());
             }
 
             //Button triggers
@@ -169,7 +163,7 @@ public class MecanumDrive extends LinearOpMode {
                 intakeServo.setPower(0);
             }
 
-            uplink("EncoderPos", "Tower Encoder Position: "+ towerEncoderPos+
+            uplink("EncoderLog", "Tower Encoder Position: "+ towerEncoderPos+
             "\nSlide Encoder Position: " + slideEncoderPos);
         }
     }

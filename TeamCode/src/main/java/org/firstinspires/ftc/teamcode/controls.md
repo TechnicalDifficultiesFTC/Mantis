@@ -11,6 +11,6 @@ dpad left: LPM off
 Left Joystick: Pink arm slide control
 Right Joystick: Climb arm slide control
 ## buttons:
-left trigger: power shaft motor forward
-right trigger: power shaft motor backwards
+left trigger: power tower motor forward
+right trigger: power tower motor backwards
 

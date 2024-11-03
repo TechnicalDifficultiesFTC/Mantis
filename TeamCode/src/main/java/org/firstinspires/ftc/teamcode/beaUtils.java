@@ -33,28 +33,27 @@ public class beaUtils {
         return voiceLines[rand.nextInt(voiceLines.length)]; //Grabs from a random position in the list
     }
 
-    public static double scoopEncoderRevolutions(DcMotor motor, double PPR) {
+    public static double scoopEncoderRevolutions(double encoderTicks, double PPR) {
         final double CPR = PPR * 4;
-        double encoderTicks = motor.getCurrentPosition();
         return encoderTicks/CPR; //Motor revolutions
     }
 
     public static double scoopEncoderDegree(MotorInformation motorInformation) {
-        double encoderRevolutions = scoopEncoderRevolutions(motorInformation.getMotor(),motorInformation.getPPR());
+        double encoderRevolutions = scoopEncoderRevolutions(motorInformation.getMotor().getCurrentPosition(),motorInformation.getPPR());
         double angle = encoderRevolutions * 360;
         //Lowkey got this off of gm0, review this logic b4 deploying
         return angle % 360; //Normalize angle
     }
 
-    public static double getAngularMomentum(double revolutions, double timeframeSeconds) {
-        Math
-    }
-    public static int pinkArmEncoderToDegreeConversion(MotorInformation motorInformation) {
-        double currentPinkArmDegrees;
-
-        double currentMotorRevolutions = scoopEncoderRevolutions(motorInformation.getMotor(), motorInformation.getPPR());
-        //Fill in logic to calculate 1 rev of the motor shaft to the pink arm top dead axle
-        return currentPinkArmDegrees;
+    public static double pinkArmEncoderToDegreeConversion(MotorInformation motorInformation) {
+        //Gets motor revolutions
+        double currentMotorRevolutions = scoopEncoderRevolutions(motorInformation.getMotor().getCurrentPosition() , motorInformation.getPPR());
+        //Account for 3:1 gear ratio
+        double pinkArmRevolutions = currentMotorRevolutions / 3;
+        //Turn into revs
+        double pinkArmAngle = pinkArmRevolutions * 360;
+        //Normalize angle
+        return pinkArmAngle % 360;
     }
     public static boolean triggerBoolean(double triggerValue) {
         //Compares the float value to threshold

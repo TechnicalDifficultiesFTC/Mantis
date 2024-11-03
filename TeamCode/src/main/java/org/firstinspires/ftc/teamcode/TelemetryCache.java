@@ -17,27 +17,30 @@ public class TelemetryCache {
      */
     public TelemetryCache(String MOTM,int cacheLen) {
         this.MOTM = MOTM;
-        this.telemetryCache = new String[cacheLen];
+        this.telemetryCache = new String[cacheLen+1];
     }
     public void updateTelemetryCache(String specifier, String message) {
         switch (specifier) {
             case "Overview":
                 telemetryCache[0] = "Overview: "+message;
                 break;
-            case "SlideMotor":
-                telemetryCache[1] = "SlideMotor POW: "+message;
+            case "EncoderLogs":
+                telemetryCache[1] = "\nEncoderLog: "+message;
                 break;
             case "ServoLog":
-                telemetryCache[2] = "CRSERVO: "+message;
+                telemetryCache[2] = "CRSERVO Status: "+message;
                 break;
             case "PowerStatus":
-                telemetryCache[3] = "Power: "+message;
+                telemetryCache[3] = "Power Status: "+message;
                 break;
-            case "EncoderPos":
-                telemetryCache[4] = "EncoderPos (tower): "+message;
+            case "SlideMotor":
+                telemetryCache[4] = "\nSlideMotor Status: "+message;
+                break;
+            case "towerMotor":
+                telemetryCache[5] = "TowerMotor Status: "+message;
                 break;
             default:
-                telemetryCache[5] = "Attempted to register message to log with unknown specifier" + specifier;
+                telemetryCache[6] = "\nAttempted to register message to log with unknown specifier" + specifier;
         }
     }
     /**
@@ -46,6 +49,7 @@ public class TelemetryCache {
      */
     public String compileTelemetryCache() {
         StringBuilder compiledTelemetry = new StringBuilder();
+
         compiledTelemetry.append("MOTM: ").append(MOTM).append("\n");
         for (String messageData : telemetryCache) {
             if (messageData == null) {
