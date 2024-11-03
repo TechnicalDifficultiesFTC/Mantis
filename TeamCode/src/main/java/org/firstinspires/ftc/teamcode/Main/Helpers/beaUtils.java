@@ -1,18 +1,8 @@
-package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.robotcore.hardware.DcMotor;
+package org.firstinspires.ftc.teamcode.Main.Helpers;
 
 import java.util.Random;
 
 public class beaUtils {
-    //Utils
-    public static void pushDrivetrainPower(double FLM, double BLM, double FRM, double BRM) {
-        //Update motor objects with power variables
-        MecanumDrive.frontLeftMotor.setPower(FLM);
-        MecanumDrive.backLeftMotor.setPower(BLM);
-        MecanumDrive.frontRightMotor.setPower(FRM);
-        MecanumDrive.backRightMotor.setPower(BRM);
-    }
 
     public static String generateVoiceLine() {
         //Just for fun! Display a "voice line" on initialization
@@ -33,21 +23,14 @@ public class beaUtils {
         return voiceLines[rand.nextInt(voiceLines.length)]; //Grabs from a random position in the list
     }
 
-    public static double scoopEncoderRevolutions(double encoderTicks, double PPR) {
+    public static double getEncoderRevolutions(double encoderTicks, double PPR) {
         final double CPR = PPR * 4;
         return encoderTicks/CPR; //Motor revolutions
     }
 
-    public static double scoopEncoderDegree(MotorInformation motorInformation) {
-        double encoderRevolutions = scoopEncoderRevolutions(motorInformation.getMotor().getCurrentPosition(),motorInformation.getPPR());
-        double angle = encoderRevolutions * 360;
-        //Lowkey got this off of gm0, review this logic b4 deploying
-        return angle % 360; //Normalize angle
-    }
-
-    public static double pinkArmEncoderToDegreeConversion(MotorInformation motorInformation) {
+    public static double pinkArmEncoderToDegreeConversion(int encoderPosition,double PPR) {
         //Gets motor revolutions
-        double currentMotorRevolutions = scoopEncoderRevolutions(motorInformation.getMotor().getCurrentPosition() , motorInformation.getPPR());
+        double currentMotorRevolutions = getEncoderRevolutions(encoderPosition, PPR);
         //Account for 3:1 gear ratio
         double pinkArmRevolutions = currentMotorRevolutions / 3;
         //Turn into revs
