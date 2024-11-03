@@ -11,16 +11,6 @@ public class MecanumDrivetrain {
     static DcMotor frontRightMotor;
     static DcMotor backRightMotor;
 
-    public MecanumDrivetrain(DcMotor FLM, DcMotor BLM, DcMotor FRM, DcMotor BRM){
-        frontLeftMotor = FLM;
-        backLeftMotor = BLM;
-        frontRightMotor = FRM;
-        backRightMotor = BRM;
-        // TODO: Full Zero Power Brake all drivetrain motors?
-        //These motors have to be set to reverse by standard so that Mecanum works
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-    }
     double y;
     double x;
     double rx;
@@ -32,7 +22,41 @@ public class MecanumDrivetrain {
     boolean lowPowerMode;
 
     double modulator;
+
+    /**
+     * Initialize the drivetrain and pass in appropriate motor objects
+     * @param FLM Front Left Motor
+     * @param BLM Back Left Motor
+     * @param FRM Front Right Motor
+     * @param BRM Back Right Motor
+     */
+    public MecanumDrivetrain(DcMotor FLM, DcMotor BLM, DcMotor FRM, DcMotor BRM){
+        frontLeftMotor = FLM;
+        backLeftMotor = BLM;
+        frontRightMotor = FRM;
+        backRightMotor = BRM;
+        //These motors have to be set to reverse by standard so that Mecanum works
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    /**
+     * Sets the zero power behavior of *all* drivetrain motors to input parameter
+     * @param zeroPowerBehavior A zeroPowerBehavior which can be found at DcMotor.ZeroPowerBehavior.[Const here]
+     */
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+        frontLeftMotor.setZeroPowerBehavior(zeroPowerBehavior);
+        backLeftMotor.setZeroPowerBehavior(zeroPowerBehavior);
+        frontRightMotor.setZeroPowerBehavior(zeroPowerBehavior);
+        backRightMotor.setZeroPowerBehavior(zeroPowerBehavior);
+    }
+
+    /**
+     * Handle drivetrain logic and update motors as such
+     * @param gamepad All input from gamepad (1)
+     */
     public void processInput(Gamepad gamepad){
+
         if (gamepad.dpad_right) {
             lowPowerMode = true;
         }
@@ -58,7 +82,12 @@ public class MecanumDrivetrain {
         backRightMotor.setPower(backRightPower);
     }
 
+    /**
+     * Returns state of field lowPowerMode
+     * @return lowPowerMode
+     */
     public boolean isLowPowerMode() {
         return lowPowerMode;
     }
+
 }

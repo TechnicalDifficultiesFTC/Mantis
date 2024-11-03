@@ -1,6 +1,14 @@
 package org.firstinspires.ftc.teamcode.Main;
 
+/**
+ * Holds static values
+ */
 public class Constants {
+
+    //Used in beaUtils.triggerBoolean() to determine the amount a trigger needs to be pressed to return true
+    public static final double TRIGGER_THRESHOLD = .1;
+
+    //Used for software under clock
     public static final double MIN_SPEED = 0.33;
     public static final double MAX_SPEED = 1;
 

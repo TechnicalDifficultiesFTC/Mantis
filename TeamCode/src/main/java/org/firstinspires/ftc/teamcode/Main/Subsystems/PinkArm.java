@@ -6,10 +6,17 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Main.Helpers.beaUtils;
 
-public class PinkArm {
+public class PinkArm extends beaUtils {
     DcMotor towerMotor;
     DcMotor slideMotor;
     CRServo intakeServo;
+
+    /**
+     * Initialize PinkArm and pass in PinkArm motors and servo objects
+     * @param towerMotor Tower Motor
+     * @param slideMotor Slide Motor
+     * @param intakeServo CRServo Intake Servo
+     */
     public PinkArm (DcMotor towerMotor, DcMotor slideMotor, CRServo intakeServo) {
         this.towerMotor = towerMotor;
         this.slideMotor = slideMotor;
@@ -19,13 +26,17 @@ public class PinkArm {
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    /**
+     * Main processing loop of PinkArm
+     * @param gamepad All input from gamepad (2)
+     */
     public void processInput(Gamepad gamepad) {
         //Tower Motor
         // TODO: Look into futures/promises to get rid of these wack if statements all over the place
-        if (beaUtils.triggerBoolean(gamepad.left_trigger)) { //Start moving servo to position 0
+        if (triggerBoolean(gamepad.left_trigger)) { //Start moving servo to position 0
             towerMotor.setPower(1);
         }
-        else if (beaUtils.triggerBoolean(gamepad.right_trigger)) { //Start moving servo to position 1
+        else if (triggerBoolean(gamepad.right_trigger)) { //Start moving servo to position 1
             towerMotor.setPower(-1);
         }
         else {
@@ -44,13 +55,10 @@ public class PinkArm {
         //Slide Motor
         slideMotor.setPower(gamepad.left_stick_y);
     }
-    public double getTowerMotorPosition() {
-        return towerMotor.getCurrentPosition();
-    }
 
-    public double getSlideMotorPosition() {
-        return slideMotor.getCurrentPosition();
-    }
+    /**
+     * Zeros tower and slide motor encoders
+     */
     public void zeroEncoders() {
         //Refresh encoder values to 0 at current position
         towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
