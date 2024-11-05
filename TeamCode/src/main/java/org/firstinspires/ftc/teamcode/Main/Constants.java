@@ -15,4 +15,14 @@ public class Constants {
     //Necessary encoder information
     public static final double TOWER_MOTOR_PPR = 5281.1;
     public static final double SLIDE_MOTOR_PPR = 587.7;
+
+    //Tag funzies :)
+    public static final String dasshTag =
+            "/======================================\\\\\n" +
+            "|| ____                _       ___  _  ||\n" +
+            "|||  _ \\  __ _ ___ ___| |__  / _ \\/ | ||\n" +
+            "||| | | |/ _` / __/ __| '_ \\| | | | | ||\n" +
+            "||| |_| | (_| \\__ \\__ \\ | | | |_| | | ||\n" +
+            "|||____/ \\__,_|___/___/_| |_|\\___/|_| ||\n" +
+            "\\======================================/";
 }

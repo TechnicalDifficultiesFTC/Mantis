@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Main.Helpers.beaUtils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
@@ -23,15 +24,15 @@ public class RobotContainer extends LinearOpMode {
         //Grab devices
 
         //Drivetrain
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("FLM");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("BLM");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("FRM");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("BRM");
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get(DeviceRegistry.FRONT_LEFT_MOTOR.str());
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get(DeviceRegistry.BACK_LEFT_MOTOR.str());
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get(DeviceRegistry.FRONT_RIGHT_MOTOR.str());
+        DcMotor backRightMotor = hardwareMap.dcMotor.get(DeviceRegistry.BACK_RIGHT_MOTOR.str());
 
         //Pink Arm
-        CRServo intakeServo = hardwareMap.crservo.get("intakeServo");
-        DcMotor towerMotor = hardwareMap.dcMotor.get("towerMotor");
-        DcMotor slideMotor = hardwareMap.dcMotor.get("slideMotor");
+        CRServo intakeServo = hardwareMap.crservo.get(DeviceRegistry.INTAKE_SERVO.str());
+        DcMotor towerMotor = hardwareMap.dcMotor.get(DeviceRegistry.TOWER_MOTOR.str());
+        DcMotor slideMotor = hardwareMap.dcMotor.get(DeviceRegistry.SLIDE_MOTOR.str());
 
         MecanumDrivetrain drivetrain = new MecanumDrivetrain(frontLeftMotor,backLeftMotor,frontRightMotor,backRightMotor);
         PinkArm pinkArm = new PinkArm(towerMotor,slideMotor,intakeServo);
@@ -41,7 +42,7 @@ public class RobotContainer extends LinearOpMode {
 
         //PinkArm initial setup
         pinkArm.zeroEncoders(); //WILL KILL MOTORS
-        pinkArm.sendEncodersCommands(DcMotor.RunMode.RUN_USING_ENCODER); //Fingers crossed will restart motors
+        pinkArm.restartMotors(); //Fingers crossed will restart motors
 
         telemetry.update();
 
@@ -59,10 +60,14 @@ public class RobotContainer extends LinearOpMode {
             telemetry.addData("Overview: ","Online");
             telemetry.addData("MOTM: ",MOTM);
             telemetry.addLine("Low Power Mode Status: "+ drivetrain.isLowPowerMode());
+            telemetry.addLine();
             telemetry.addLine("Slide Motor Power: "+ slideMotor.getPower());
             telemetry.addLine("Tower Motor Power: "+ towerMotor.getPower());
-            telemetry.addLine("Tower Encoder Position (revs): "+ beaUtils.getEncoderRevolutions(towerMotor.getCurrentPosition(),Constants.TOWER_MOTOR_PPR));
-            telemetry.addLine("Slide Encoder Position (revs): "+ beaUtils.getEncoderRevolutions(slideMotor.getCurrentPosition(),Constants.SLIDE_MOTOR_PPR));
+            telemetry.addLine();
+            telemetry.addLine("Tower Encoder Position (revs): "+ pinkArm.getTowerMotorRevolutions());
+            telemetry.addLine("Slide Encoder Position (revs): "+ pinkArm.getSlideMotorRevolutions());
+            telemetry.addLine();
+            telemetry.addLine("ASSUMED TOWER DEGREES: "+ pinkArm.getTowerDegree());
             telemetry.update();
         }
     }

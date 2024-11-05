@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Main.Helpers;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.Main.Constants;
 
 import java.util.Random;
@@ -31,28 +33,24 @@ public class beaUtils {
 
     /**
      * Calculates an encoders current revolutions
-     * @param encoderTicks Distance an encoder has already traveled (in ticks) can be found with motor.getCurrentPosition()
-     * @param PPR Pulses per revolution (find in Constants.java)
+     * @param motor [DcMotor] Motor to get encoder revolutions from
+     * @param PPR [double] Pulses per revolution (find in Constants.java)
      * @return [double] Motor Revolutions
      */
-    public static double getEncoderRevolutions(double encoderTicks, double PPR) {
-        final double CPR = PPR * 4;
+    public static double getEncoderRevolutions(DcMotor motor, double PPR) {
+        int encoderTicks = motor.getCurrentPosition();
+        double CPR = PPR * 4;
         return encoderTicks/CPR; //Motor revolutions
     }
 
     /**
-     * (Indev)
-     * @param encoderPosition Distance an encoder has already traveled (in ticks) can be found with motor.getCurrentPosition()
-     * @param PPR Pulses per revolution (find in Constants.java)
+     * NOTE, ACCOUNT FOR 3:1 GEAR RATIO OUTSIDE OF FUNCTION BY DIVIDING THE OUTPUT OF ENCODER REVOLUTIONS
+     * @param currentMotorRevolutions Current motor revolutions, can be found with getEncoderRevolutions(...)
      * @return [double] Motor degree in degrees
      */
-    public static double pinkArmEncoderToDegreeConversion(int encoderPosition,double PPR) {
-        //Gets motor revolutions
-        double currentMotorRevolutions = getEncoderRevolutions(encoderPosition, PPR);
-        //Account for 3:1 gear ratio
-        double pinkArmRevolutions = currentMotorRevolutions / 3;
+    public static double getDegreesFromRevolutions(double currentMotorRevolutions) {
         //Turn into revs
-        double pinkArmAngle = pinkArmRevolutions * 360;
+        double pinkArmAngle = currentMotorRevolutions * 360;
         //Normalize angle
         return pinkArmAngle % 360;
     }

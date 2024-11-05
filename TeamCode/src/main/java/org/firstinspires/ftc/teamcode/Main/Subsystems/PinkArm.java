@@ -4,12 +4,16 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.Main.Constants;
 import org.firstinspires.ftc.teamcode.Main.Helpers.beaUtils;
 
 public class PinkArm extends beaUtils {
     DcMotor towerMotor;
     DcMotor slideMotor;
     CRServo intakeServo;
+    double towerMotorPower;
+    double slideMotorPower;
+    double intakeServoPower;
 
     /**
      * Initialize PinkArm and pass in PinkArm motors and servo objects
@@ -31,29 +35,23 @@ public class PinkArm extends beaUtils {
      * @param gamepad All input from gamepad (2)
      */
     public void processInput(Gamepad gamepad) {
-        //Tower Motor
-        // TODO: Look into futures/promises to get rid of these wack if statements all over the place
-        if (triggerBoolean(gamepad.left_trigger)) { //Start moving servo to position 0
-            towerMotor.setPower(1);
-        }
-        else if (triggerBoolean(gamepad.right_trigger)) { //Start moving servo to position 1
-            towerMotor.setPower(-1);
-        }
-        else {
-            towerMotor.setPower(0);
-        }
-        //CRServo intake
+        //Grab powers
+        towerMotorPower = gamepad.left_trigger - gamepad.right_trigger;
+        slideMotorPower = gamepad.left_stick_y;
+        //CRServo power logic
         if (gamepad.left_bumper) {
-            intakeServo.setPower(1);
+            intakeServoPower = 1;
         }
         else if (gamepad.right_bumper) {
-            intakeServo.setPower(-1);
+            intakeServoPower = -1;
         }
         else {
-            intakeServo.setPower(0);
+            intakeServoPower = 0;
         }
-        //Slide Motor
-        slideMotor.setPower(gamepad.left_stick_y);
+        //Send power to devices
+        towerMotor.setPower(towerMotorPower);
+        slideMotor.setPower(slideMotorPower);
+        intakeServo.setPower(intakeServoPower);
     }
 
     /**
@@ -66,11 +64,21 @@ public class PinkArm extends beaUtils {
     }
 
     /**
-     * Generic acceptance of runModes
-     * @param runMode DcMotor.RunMode.[const here]
+     * Sends Enum command RUN_USING_ENCODERS to motors
      */
-    public void sendEncodersCommands(DcMotor.RunMode runMode) {
-        towerMotor.setMode(runMode);
-        slideMotor.setMode(runMode);
+    public void restartMotors() {
+        towerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public double getTowerDegree() {
+        return getDegreesFromRevolutions(getTowerMotorRevolutions()/4);
+    }
+
+    public double getTowerMotorRevolutions() {
+        return getEncoderRevolutions(towerMotor,Constants.TOWER_MOTOR_PPR);
+    }
+    public double getSlideMotorRevolutions() {
+        return getEncoderRevolutions(slideMotor,Constants.SLIDE_MOTOR_PPR);
     }
 }
