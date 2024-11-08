@@ -21,6 +21,7 @@ public class RobotContainer extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Overview: ","Initialized");
         telemetry.addData("MOTM: ",MOTM);
+        telemetry.addLine(Constants.dasshTag);
         //Grab devices
 
         //Drivetrain
