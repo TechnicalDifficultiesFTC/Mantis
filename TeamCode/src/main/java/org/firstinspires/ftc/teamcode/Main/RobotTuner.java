@@ -10,34 +10,23 @@ import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Main.Helpers.beaUtils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 
-@TeleOp(name="Eradicator V:B", group="Linear OpMode")
-public class RobotContainer extends LinearOpMode {
+@TeleOp(name="Robot Tuning", group="Linear OpMode")
+public class RobotTuner extends LinearOpMode {
 
     //Initialize global variables and local functions
     //By global variables I mean ONLY variables that are gonna get accessed by beaUtils/other classes, not finals and stuff
-    public String MOTM = beaUtils.generateVoiceLine();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry.addLine(Constants.dasshTag);
+        telemetry.addLine("NOTE: ONLY PROCESSING GAMEPAD 2 INPUT");
         //Grab devices
-
-        //Drivetrain
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get(DeviceRegistry.FRONT_LEFT_MOTOR.str());
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get(DeviceRegistry.BACK_LEFT_MOTOR.str());
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get(DeviceRegistry.FRONT_RIGHT_MOTOR.str());
-        DcMotor backRightMotor = hardwareMap.dcMotor.get(DeviceRegistry.BACK_RIGHT_MOTOR.str());
 
         //Pink Arm
         CRServo intakeServo = hardwareMap.crservo.get(DeviceRegistry.INTAKE_SERVO.str());
         DcMotor towerMotor = hardwareMap.dcMotor.get(DeviceRegistry.TOWER_MOTOR.str());
         DcMotor slideMotor = hardwareMap.dcMotor.get(DeviceRegistry.SLIDE_MOTOR.str());
 
-        MecanumDrivetrain drivetrain = new MecanumDrivetrain(frontLeftMotor,backLeftMotor,frontRightMotor,backRightMotor);
         PinkArm pinkArm = new PinkArm(towerMotor,slideMotor,intakeServo);
-
-        //Drivetrain initial setup
-        drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //PinkArm initial setup
         pinkArm.zeroEncoders(); //WILL KILL MOTORS
@@ -52,21 +41,16 @@ public class RobotContainer extends LinearOpMode {
 
         while (opModeIsActive()) { //Primary loop
 
-            drivetrain.processInput(gamepad1);
             pinkArm.processInput(gamepad2);
 
             //Telemetry
-            telemetry.addData("Overview: ", "Online");
-            telemetry.addData("MOTM: ", MOTM);
-            telemetry.addLine("Low Power Mode Status: " + drivetrain.isLowPowerMode());
+            telemetry.addData("Overview: ","Online");
+
+            telemetry.addLine("Slide Motor Power: "+ slideMotor.getPower());
+            telemetry.addLine("Tower Motor Power: "+ towerMotor.getPower());
             telemetry.addLine();
-            telemetry.addLine("Slide Motor Power: " + slideMotor.getPower());
-            telemetry.addLine("Tower Motor Power: " + towerMotor.getPower());
-            telemetry.addLine();
-            telemetry.addLine("Tower Encoder Position (revs): " + pinkArm.getTowerMotorRevolutions());
-            telemetry.addLine("Slide Encoder Position (revs): " + pinkArm.getSlideMotorRevolutions());
-            telemetry.addLine();
-            telemetry.addLine("ASSUMED TOWER DEGREES: " + pinkArm.getTowerDegree() * 4.5);
+            telemetry.addLine("ASSUMED TOWER DEGREES: "+ pinkArm.getTowerDegree()*4.5);
+            telemetry.addLine("ASSUMED SLIDE REVOLUTIONS OUT: " + pinkArm.getSlideMotorRevolutions());
             telemetry.update();
         }
     }

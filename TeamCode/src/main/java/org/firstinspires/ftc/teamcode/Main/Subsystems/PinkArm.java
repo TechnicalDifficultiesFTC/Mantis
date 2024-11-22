@@ -81,4 +81,5 @@ public class PinkArm extends beaUtils {
     public double getSlideMotorRevolutions() {
         return getEncoderRevolutions(slideMotor,Constants.SLIDE_MOTOR_PPR);
     }
+
 }

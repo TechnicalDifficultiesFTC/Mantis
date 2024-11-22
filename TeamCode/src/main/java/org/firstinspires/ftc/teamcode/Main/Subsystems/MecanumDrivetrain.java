@@ -38,6 +38,7 @@ public class MecanumDrivetrain {
         //These motors have to be set to reverse by standard so that Mecanum works
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     /**
