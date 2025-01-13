@@ -36,9 +36,10 @@ public class MecanumDrivetrain {
         frontRightMotor = FRM;
         backRightMotor = BRM;
         //These motors have to be set to reverse by standard so that Mecanum works
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftMotor.setDirection(Constants.FRONT_LEFT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+        frontRightMotor.setDirection(Constants.FRONT_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(Constants.BACK_LEFT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(Constants.BACK_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
     }
 
     /**
@@ -58,11 +59,8 @@ public class MecanumDrivetrain {
      */
     public void processInput(Gamepad gamepad){
 
-        if (gamepad.dpad_right) {
-            lowPowerMode = true;
-        }
-        else if (gamepad.dpad_left) {
-            lowPowerMode = false;
+        if (gamepad.square) {
+            lowPowerMode = !lowPowerMode;
         }
 
         modulator = lowPowerMode ? Constants.MIN_SPEED : Constants.MAX_SPEED;
@@ -72,10 +70,11 @@ public class MecanumDrivetrain {
         rx = gamepad.right_stick_x;
 
         denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        frontLeftPower = ((y + x + rx) / denominator)*modulator;
-        backLeftPower = ((y - x + rx) / denominator)*modulator;
-        frontRightPower = ((y - x - rx) / denominator)*modulator;
-        backRightPower = ((y + x - rx) / denominator)*modulator;
+
+        frontLeftPower = ((y + x + rx)*modulator);
+        frontRightPower = ((y - x - rx)*modulator);
+        backLeftPower = ((y - x + rx)*modulator);
+        backRightPower = ((y + x - rx)*modulator);
 
         frontLeftMotor.setPower(frontLeftPower);
         backLeftMotor.setPower(backLeftPower);
@@ -89,6 +88,13 @@ public class MecanumDrivetrain {
      */
     public boolean isLowPowerMode() {
         return lowPowerMode;
+    }
+
+    public String getMotorsStatusAsString() {
+        return "Front Left Power = " + frontLeftMotor.getPower() +
+                "\nFront Right Power = " + frontRightMotor.getPower() +
+                "\nBack Left Power = " + backLeftMotor.getPower() +
+                "\nBack Right Power = " + backRightMotor.getPower();
     }
 
 }

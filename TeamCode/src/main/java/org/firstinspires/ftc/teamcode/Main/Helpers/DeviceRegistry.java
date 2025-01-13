@@ -9,7 +9,9 @@ public enum DeviceRegistry {
     TOWER_MOTOR("towerMotor"),
     SLIDE_MOTOR("slideMotor"),
     //Servos
-    INTAKE_SERVO("intakeServo");
+    INTAKE_SERVO("intakeServo"),
+    CLIMB_MOTOR_LEFT("climbOne"),
+    CLIMB_MOTOR_RIGHT("climbTwo");
 
     private final String deviceName;
 

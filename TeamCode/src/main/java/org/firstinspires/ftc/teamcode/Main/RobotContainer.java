@@ -6,19 +6,20 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
+import org.firstinspires.ftc.teamcode.Main.Subsystems.Climb;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Main.Helpers.beaUtils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 
-@TeleOp(name="Eradicator V:B", group="Linear OpMode")
-public class RobotContainer extends LinearOpMode {
+@TeleOp(name="MANTIS V:B2", group="Linear OpMode")
 
-    //Initialize global variables and local functions
-    //By global variables I mean ONLY variables that are gonna get accessed by beaUtils/other classes, not finals and stuff
-    public String MOTM = beaUtils.generateVoiceLine();
+public class RobotContainer extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        final String MOTM = beaUtils.generateMOTMLine();
+
         telemetry.addLine(Constants.dasshTag);
         //Grab devices
 
@@ -33,8 +34,14 @@ public class RobotContainer extends LinearOpMode {
         DcMotor towerMotor = hardwareMap.dcMotor.get(DeviceRegistry.TOWER_MOTOR.str());
         DcMotor slideMotor = hardwareMap.dcMotor.get(DeviceRegistry.SLIDE_MOTOR.str());
 
+        //Climb
+        DcMotor climbMotorLeft = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_LEFT.str());
+        DcMotor climbMotorRight = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_RIGHT.str());
+
+        //Create subsystem singletons
         MecanumDrivetrain drivetrain = new MecanumDrivetrain(frontLeftMotor,backLeftMotor,frontRightMotor,backRightMotor);
         PinkArm pinkArm = new PinkArm(towerMotor,slideMotor,intakeServo);
+        Climb climb = new Climb(climbMotorLeft,climbMotorRight);
 
         //Drivetrain initial setup
         drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -43,6 +50,7 @@ public class RobotContainer extends LinearOpMode {
         pinkArm.zeroEncoders(); //WILL KILL MOTORS
         pinkArm.restartMotors(); //Fingers crossed will restart motors
 
+        telemetry.addLine("Systems Registered!");
         telemetry.update();
 
         //Nothing past this point will run until the start button is pressed
@@ -52,21 +60,24 @@ public class RobotContainer extends LinearOpMode {
 
         while (opModeIsActive()) { //Primary loop
 
+            //Send input to subsystems from processing
             drivetrain.processInput(gamepad1);
             pinkArm.processInput(gamepad2);
+            climb.processInput(gamepad2, drivetrain.isLowPowerMode());
 
             //Telemetry
-            telemetry.addData("Overview: ", "Online");
+            telemetry.addLine("Overview: Online");
             telemetry.addData("MOTM: ", MOTM);
-            telemetry.addLine("Low Power Mode Status: " + drivetrain.isLowPowerMode());
+            telemetry.addLine("Low Power Mode Status (DT): " + drivetrain.isLowPowerMode());
             telemetry.addLine();
             telemetry.addLine("Slide Motor Power: " + slideMotor.getPower());
             telemetry.addLine("Tower Motor Power: " + towerMotor.getPower());
             telemetry.addLine();
-            telemetry.addLine("Tower Encoder Position (revs): " + pinkArm.getTowerMotorRevolutions());
-            telemetry.addLine("Slide Encoder Position (revs): " + pinkArm.getSlideMotorRevolutions());
+            telemetry.addLine("Drivetrain Status: \n" + drivetrain.getMotorsStatusAsString());
             telemetry.addLine();
-            telemetry.addLine("ASSUMED TOWER DEGREES: " + pinkArm.getTowerDegree() * 4.5);
+            telemetry.addLine("Climb status: \n" + climb.getClimbArmsPositionAsString());
+
+            //Push telemetry log
             telemetry.update();
         }
     }

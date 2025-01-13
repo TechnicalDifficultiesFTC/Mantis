@@ -13,16 +13,25 @@ public class Constants {
     public static final double MAX_SPEED = 1;
 
     //Necessary encoder information
-    public static final double TOWER_MOTOR_PPR = 5281.1;
-    public static final double SLIDE_MOTOR_PPR = 587.7;
+    private static final int TOWER_ENCODER_TYPE = 4; //Quadrature
+    private static final int SLIDE_ENCODER_TYPE = 4; //Quadrature
+
+    private static final double TOWER_MOTOR_PPR = 5281.1;
+    private static final double SLIDE_MOTOR_PPR = 587.7;
+
+    public static final double TOWER_MOTOR_CPR = TOWER_MOTOR_PPR * TOWER_ENCODER_TYPE;
+    public static final double SLIDE_MOTOR_CPR = SLIDE_MOTOR_PPR * SLIDE_ENCODER_TYPE;
+
+    //Mess around with these until the drivetrain drivetrains
+    //Btw setting a value to false is setting the motor to go in reverse when given a positive signal
+
+    public static final boolean FRONT_LEFT_DT_MOTOR_FORWARD = false;
+
+    public static final boolean FRONT_RIGHT_DT_MOTOR_FORWARD = true;
+    public static final boolean BACK_LEFT_DT_MOTOR_FORWARD = false;
+
+    public static final boolean BACK_RIGHT_DT_MOTOR_FORWARD = false;
 
     //Tag funzies :)
-    public static final String dasshTag =
-            "/======================================\\\\\n" +
-            "||  ____                    _       ___  _    ||\n" +
-            "|| |  _   \\  __ _ ___ ___| |__   / _ \\/ |   ||\n" +
-            "|| | | | |/ _` / __/ __| '_ \\|   | | | | |  |\n" +
-            "|| | |_| | (_| \\__ \\__ \\ | |   | |_| | |   ||\n" +
-            "|| |____/ \\__,_|___/___/_| |_|   \\___/|_|   ||\n" +
-            "\\======================================/";
+    public static String dasshTag = "|- Dassh01 -|";
 }

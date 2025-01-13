@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Main.Subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -10,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.beaUtils;
 public class PinkArm extends beaUtils {
     DcMotor towerMotor;
     DcMotor slideMotor;
-    CRServo intakeServo;
+    public CRServo intakeServo;
     double towerMotorPower;
     double slideMotorPower;
     double intakeServoPower;
@@ -32,7 +34,7 @@ public class PinkArm extends beaUtils {
 
     /**
      * Main processing loop of PinkArm
-     * @param gamepad All input from gamepad (2)
+     * @param gamepad All input from gamepad 2 as gamepad obj
      */
     public void processInput(Gamepad gamepad) {
         //Grab powers
@@ -69,17 +71,6 @@ public class PinkArm extends beaUtils {
     public void restartMotors() {
         towerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public double getTowerDegree() {
-        return getDegreesFromRevolutions(getTowerMotorRevolutions()/3);
-    }
-
-    public double getTowerMotorRevolutions() {
-        return getEncoderRevolutions(towerMotor,Constants.TOWER_MOTOR_PPR);
-    }
-    public double getSlideMotorRevolutions() {
-        return getEncoderRevolutions(slideMotor,Constants.SLIDE_MOTOR_PPR);
     }
 
 }

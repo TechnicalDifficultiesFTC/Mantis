@@ -49,8 +49,6 @@ public class RobotTuner extends LinearOpMode {
             telemetry.addLine("Slide Motor Power: "+ slideMotor.getPower());
             telemetry.addLine("Tower Motor Power: "+ towerMotor.getPower());
             telemetry.addLine();
-            telemetry.addLine("ASSUMED TOWER DEGREES: "+ pinkArm.getTowerDegree()*4.5);
-            telemetry.addLine("ASSUMED SLIDE REVOLUTIONS OUT: " + pinkArm.getSlideMotorRevolutions());
             telemetry.update();
         }
     }
