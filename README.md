@@ -1,2 +1,1 @@
-# FTC 10332 24-25 Comp Program
-Greetings Program
+# FTC 10332 24-25 Competiton Teleop/Auto
