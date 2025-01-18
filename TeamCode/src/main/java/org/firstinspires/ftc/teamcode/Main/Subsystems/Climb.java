@@ -4,9 +4,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.Main.Constants;
+
 public class Climb {
     DcMotor climbMotorLeft;
     DcMotor climbMotorRight;
+    boolean climbLowPowerMode;
     public Climb (DcMotor climbMotorLeft, DcMotor climbMotorRight) {
         this.climbMotorLeft = climbMotorLeft;
         this.climbMotorRight = climbMotorRight;
@@ -14,32 +17,35 @@ public class Climb {
         climbMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         climbMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        climbMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        climbMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        climbMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        climbMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
-    private void setArmsPower(int power,boolean isLowPowerMode) {
+    private void setArmsPower(float power) {
+        boolean isLowPowerMode = climbLowPowerMode;
+
         if (power > 1 || power < -1 ) {
             throw new RuntimeException();
         }
-        double modulator = isLowPowerMode ? .5 : 1;
-        climbMotorRight.setPower(power);
-        climbMotorLeft.setPower(power);
+
+        double modulator = isLowPowerMode ? Constants.MIN_SPEED : Constants.MAX_SPEED;
+
+        climbMotorRight.setPower(power*modulator);
+        climbMotorLeft.setPower(power*modulator);
     }
 
     public String getClimbArmsPositionAsString() {
         return "Climb Arm Left pos (encoder ticks) = " + climbMotorLeft.getCurrentPosition() +
                 "\nClimb Arm Right pos (encoder ticks) = " + climbMotorRight.getCurrentPosition();
     }
-    public void processInput(Gamepad gamepad,boolean isLowPowerMode) {
-        if (gamepad.dpad_up) {
-            setArmsPower(1,isLowPowerMode);
+
+    public boolean isClimbLowPowerMode() {
+        return climbLowPowerMode;
+    }
+    public void processInput(Gamepad gamepad) {
+        if (gamepad.square) {
+            climbLowPowerMode = !climbLowPowerMode;
         }
-        if (gamepad.dpad_down) {
-            setArmsPower(-1,isLowPowerMode);
-        }
-        if (gamepad.dpad_up && gamepad.dpad_down) {
-            setArmsPower(0,isLowPowerMode);
-        }
+        setArmsPower(gamepad.right_stick_y);
     }
 }

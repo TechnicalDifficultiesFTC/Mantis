@@ -8,7 +8,7 @@ public class Constants {
     //Used in beaUtils.triggerBoolean() to determine the amount a trigger needs to be pressed to return true
     public static final double TRIGGER_THRESHOLD = .1;
 
-    //Used for software under clock
+    //Used for software underclock
     public static final double MIN_SPEED = 0.33;
     public static final double MAX_SPEED = 1;
 
@@ -31,6 +31,9 @@ public class Constants {
     public static final boolean BACK_LEFT_DT_MOTOR_FORWARD = false;
 
     public static final boolean BACK_RIGHT_DT_MOTOR_FORWARD = false;
+
+    //Pinkarm PID
+    public static final int SCALER = 50;
 
     //Tag funzies :)
     public static String dasshTag = "|- Dassh01 -|";

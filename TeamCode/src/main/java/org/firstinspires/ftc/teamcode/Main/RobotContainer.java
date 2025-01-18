@@ -63,12 +63,13 @@ public class RobotContainer extends LinearOpMode {
             //Send input to subsystems from processing
             drivetrain.processInput(gamepad1);
             pinkArm.processInput(gamepad2);
-            climb.processInput(gamepad2, drivetrain.isLowPowerMode());
+            climb.processInput(gamepad2);
 
             //Telemetry
             telemetry.addLine("Overview: Online");
             telemetry.addData("MOTM: ", MOTM);
-            telemetry.addLine("Low Power Mode Status (DT): " + drivetrain.isLowPowerMode());
+            telemetry.addLine("Low Power Mode Status (DT): " + drivetrain.isDrivetrainLowPowerMode());
+            telemetry.addLine("Low Power Mode Status (CLIMB): " + climb.isClimbLowPowerMode());
             telemetry.addLine();
             telemetry.addLine("Slide Motor Power: " + slideMotor.getPower());
             telemetry.addLine("Tower Motor Power: " + towerMotor.getPower());
@@ -76,8 +77,10 @@ public class RobotContainer extends LinearOpMode {
             telemetry.addLine("Drivetrain Status: \n" + drivetrain.getMotorsStatusAsString());
             telemetry.addLine();
             telemetry.addLine("Climb status: \n" + climb.getClimbArmsPositionAsString());
-
-            //Push telemetry log
+            telemetry.addLine();
+            telemetry.addLine("HYPOTHETICAL tower pos: " + pinkArm.getTowerMotorHypotheticalPos());
+            telemetry.addLine("ACTUAL tower pos: " + towerMotor.getCurrentPosition());
+            //Push telemetry log to driver hub console
             telemetry.update();
         }
     }

@@ -86,8 +86,18 @@ public class MecanumDrivetrain {
      * Returns state of field lowPowerMode
      * @return lowPowerMode
      */
-    public boolean isLowPowerMode() {
+    public boolean isDrivetrainLowPowerMode() {
         return lowPowerMode;
+    }
+
+    public void strafeLeft(double power) {
+        //uhhhhhhhhh
+        frontRightMotor.setPower(power);
+        backLeftMotor.setPower(power);
+
+        frontLeftMotor.setPower(-power);
+        backRightMotor.setPower(-power);
+
     }
 
     public String getMotorsStatusAsString() {

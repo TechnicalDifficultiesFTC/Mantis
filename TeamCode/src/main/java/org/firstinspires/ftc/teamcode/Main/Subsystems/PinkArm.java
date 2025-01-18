@@ -16,6 +16,7 @@ public class PinkArm extends beaUtils {
     double towerMotorPower;
     double slideMotorPower;
     double intakeServoPower;
+    int towerMotorPos;
 
     /**
      * Initialize PinkArm and pass in PinkArm motors and servo objects
@@ -32,15 +33,22 @@ public class PinkArm extends beaUtils {
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    public static void holdPosition(int pos, DcMotor motor) {
+        motor.setTargetPosition(pos);
+    }
+
     /**
      * Main processing loop of PinkArm
      * @param gamepad All input from gamepad 2 as gamepad obj
      */
     public void processInput(Gamepad gamepad) {
+        //TODO: Fix pinkarm FFL stabilization
         //Grab powers
+        //towerMotorPos += (int) ((gamepad.left_trigger - gamepad.right_trigger) * Constants.SCALER);
         towerMotorPower = gamepad.left_trigger - gamepad.right_trigger;
         slideMotorPower = gamepad.left_stick_y;
         //CRServo power logic
+        //TODO: Curb outtake power
         if (gamepad.left_bumper) {
             intakeServoPower = 1;
         }
@@ -51,11 +59,15 @@ public class PinkArm extends beaUtils {
             intakeServoPower = 0;
         }
         //Send power to devices
+        //holdPosition(towerMotorPos,towerMotor);
         towerMotor.setPower(towerMotorPower);
         slideMotor.setPower(slideMotorPower);
         intakeServo.setPower(intakeServoPower);
     }
 
+    public double getTowerMotorHypotheticalPos() {
+        return towerMotorPos;
+    }
     /**
      * Zeros tower and slide motor encoders
      */
