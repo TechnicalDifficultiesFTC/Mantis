@@ -5,10 +5,11 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.Climb;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
-import org.firstinspires.ftc.teamcode.Main.Helpers.beaUtils;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 
 @TeleOp(name="MANTIS V:B2", group="Linear OpMode")
@@ -18,7 +19,7 @@ public class RobotContainer extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        final String MOTM = beaUtils.generateMOTMLine();
+        final String MOTM = Utils.generateMOTMLine();
 
         telemetry.addLine(Constants.dasshTag);
         //Grab devices
@@ -59,7 +60,7 @@ public class RobotContainer extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) { //Primary loop
-
+            //TODO: Implement pinkarm FFL debugging
             //Send input to subsystems from processing
             drivetrain.processInput(gamepad1);
             pinkArm.processInput(gamepad2);
@@ -71,15 +72,23 @@ public class RobotContainer extends LinearOpMode {
             telemetry.addLine("Low Power Mode Status (DT): " + drivetrain.isDrivetrainLowPowerMode());
             telemetry.addLine("Low Power Mode Status (CLIMB): " + climb.isClimbLowPowerMode());
             telemetry.addLine();
-            telemetry.addLine("Slide Motor Power: " + slideMotor.getPower());
-            telemetry.addLine("Tower Motor Power: " + towerMotor.getPower());
+            telemetry.addLine("Climb lockdown status: " + climb.isClimbLockedDown());
+            //telemetry.addLine("Slide Motor Power: " + slideMotor.getPower());
+            //telemetry.addLine("Tower Motor Power: " + towerMotor.getPower());
             telemetry.addLine();
-            telemetry.addLine("Drivetrain Status: \n" + drivetrain.getMotorsStatusAsString());
+            //telemetry.addLine("Drivetrain Status: \n" + drivetrain.getMotorsStatusAsString());
+            //telemetry.addLine();
+            //telemetry.addLine("Climb positional status: \n" + climb.getClimbArmsPositionAsString());
             telemetry.addLine();
-            telemetry.addLine("Climb status: \n" + climb.getClimbArmsPositionAsString());
-            telemetry.addLine();
-            telemetry.addLine("HYPOTHETICAL tower pos: " + pinkArm.getTowerMotorHypotheticalPos());
-            telemetry.addLine("ACTUAL tower pos: " + towerMotor.getCurrentPosition());
+            //telemetry.addLine("HYPOTHETICAL tower pos: " + pinkArm.getTowerMotorHypotheticalPos());
+            //telemetry.addLine("ACTUAL tower pos: " + towerMotor.getCurrentPosition());
+            //telemetry.addLine();
+            if (Constants.SHOW_CTRL1) {
+                telemetry.addLine("GAMEPAD1 STATUS: \n" + gamepad1.toString());
+            }
+            if (Constants.SHOW_CTRL2) {
+                telemetry.addLine("GAMEPAD2 STATUS: \n " + gamepad2.toString());
+            }
             //Push telemetry log to driver hub console
             telemetry.update();
         }

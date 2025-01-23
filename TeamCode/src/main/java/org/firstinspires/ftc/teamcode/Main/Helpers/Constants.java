@@ -1,9 +1,11 @@
-package org.firstinspires.ftc.teamcode.Main;
+package org.firstinspires.ftc.teamcode.Main.Helpers;
 
 /**
  * Holds static values
  */
 public class Constants {
+    public static final boolean SHOW_CTRL1 = false;
+    public static final boolean SHOW_CTRL2 = false;
 
     //Used in beaUtils.triggerBoolean() to determine the amount a trigger needs to be pressed to return true
     public static final double TRIGGER_THRESHOLD = .1;
@@ -32,8 +34,11 @@ public class Constants {
 
     public static final boolean BACK_RIGHT_DT_MOTOR_FORWARD = false;
 
-    //Pinkarm PID
+    //Pinkarm Vars
     public static final int SCALER = 50;
+    //End effector servo
+    public static final double OUTTAKE_POWER = .5;
+    public static final double INTAKE_POWER = 1;
 
     //Tag funzies :)
     public static String dasshTag = "|- Dassh01 -|";

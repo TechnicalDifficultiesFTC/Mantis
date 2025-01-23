@@ -1,22 +1,23 @@
-# gamepad1:
+# Gamepad1:
 
-## joysticks: 
+## Joysticks: 
 Left Joystick: Forward, Backwards, Left, Right
 Right Joystick: Rotation
 
-## buttons:
+## Buttons:
 Square (Also X): Toggle (drivetrain) low power mode
 
-# gamepad2:
+# Gamepad2:
 
-## joysticks:
+## Joysticks:
 Left Joystick: Pink arm slide control (ON Y AXIS)
 Right Joystick (hypothetical): Climb arm slide control
 
-## buttons:
+## Buttons:
 left trigger: Tower motor forward
 right trigger: Tower motor backwards
-Sqaure (Also X): Toggle (climb) low power mode
+Square (Also X): Toggle (climb's) low power mode
+Circle: Set both climb arms down
 
 ## (Intake Servo)
 left button: Intake Forwards <br>

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Main.Subsystems;
 
-import org.firstinspires.ftc.teamcode.Main.Constants;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -22,6 +24,7 @@ public class MecanumDrivetrain {
     boolean lowPowerMode;
 
     double modulator;
+    Debounce sqaureDebounce = new Debounce();
 
     /**
      * Initialize the drivetrain and pass in appropriate motor objects
@@ -59,7 +62,7 @@ public class MecanumDrivetrain {
      */
     public void processInput(Gamepad gamepad){
 
-        if (gamepad.square) {
+        if (sqaureDebounce.isPressed(gamepad.square)) {
             lowPowerMode = !lowPowerMode;
         }
 

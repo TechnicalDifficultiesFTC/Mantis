@@ -1,15 +1,13 @@
 package org.firstinspires.ftc.teamcode.Main.Subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.Main.Constants;
-import org.firstinspires.ftc.teamcode.Main.Helpers.beaUtils;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 
-public class PinkArm extends beaUtils {
+public class PinkArm extends Utils {
     DcMotor towerMotor;
     DcMotor slideMotor;
     public CRServo intakeServo;
@@ -45,15 +43,15 @@ public class PinkArm extends beaUtils {
         //TODO: Fix pinkarm FFL stabilization
         //Grab powers
         //towerMotorPos += (int) ((gamepad.left_trigger - gamepad.right_trigger) * Constants.SCALER);
-        towerMotorPower = gamepad.left_trigger - gamepad.right_trigger;
+        towerMotorPower = (gamepad.left_trigger - gamepad.right_trigger);
         slideMotorPower = gamepad.left_stick_y;
         //CRServo power logic
         //TODO: Curb outtake power
-        if (gamepad.left_bumper) {
-            intakeServoPower = 1;
+        if (gamepad.left_bumper) { //Intake
+            intakeServoPower = Constants.INTAKE_POWER;
         }
-        else if (gamepad.right_bumper) {
-            intakeServoPower = -1;
+        else if (gamepad.right_bumper) { //Outtake
+            intakeServoPower = Constants.OUTTAKE_POWER;
         }
         else {
             intakeServoPower = 0;

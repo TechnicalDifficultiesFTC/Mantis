@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.Main.Helpers;
 
-import org.firstinspires.ftc.teamcode.Main.Constants;
-
 import java.util.Random;
 
-public class beaUtils {
+public class Utils {
 
     /**
      * Generates a random "voice line" to display on the telemetry feed, just for fun, servos no real purpose

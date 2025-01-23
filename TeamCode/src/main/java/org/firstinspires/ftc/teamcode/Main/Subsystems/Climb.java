@@ -4,12 +4,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.Main.Constants;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
 
 public class Climb {
     DcMotor climbMotorLeft;
     DcMotor climbMotorRight;
-    boolean climbLowPowerMode;
+    boolean climbLowPowerMode = false;
+    boolean climbLockDown = false;
+    Debounce circleDebounce = new Debounce();
+    Debounce sqaureDebounce = new Debounce();
     public Climb (DcMotor climbMotorLeft, DcMotor climbMotorRight) {
         this.climbMotorLeft = climbMotorLeft;
         this.climbMotorRight = climbMotorRight;
@@ -39,13 +44,22 @@ public class Climb {
                 "\nClimb Arm Right pos (encoder ticks) = " + climbMotorRight.getCurrentPosition();
     }
 
+    public boolean isClimbLockedDown() {
+        return climbLockDown;
+    }
     public boolean isClimbLowPowerMode() {
         return climbLowPowerMode;
     }
     public void processInput(Gamepad gamepad) {
-        if (gamepad.square) {
+        if (sqaureDebounce.isPressed(gamepad.square)) {
             climbLowPowerMode = !climbLowPowerMode;
         }
-        setArmsPower(gamepad.right_stick_y);
+        if (circleDebounce.isPressed(gamepad.circle)) {
+            climbLockDown = !climbLockDown;
+        }
+
+        //If climb is locked to down send climb motors down
+        //If climb is unlocked then power scales off of the right stick y
+        setArmsPower(climbLockDown ? -1 : gamepad.right_stick_y);
     }
 }

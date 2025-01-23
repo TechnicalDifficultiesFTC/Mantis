@@ -4,16 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
-import org.firstinspires.ftc.teamcode.Main.Helpers.beaUtils;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 
 @Autonomous(name="MANTIS AUTO V:A1 EMERGENCY", group="Linear OpMode")
-public class AUTORobotContainer extends LinearOpMode {
+public class AutoRobotContainer extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        final String MOTM = beaUtils.generateMOTMLine();
+        final String MOTM = Utils.generateMOTMLine();
 
         telemetry.addLine(Constants.dasshTag);
         //Grab devices
