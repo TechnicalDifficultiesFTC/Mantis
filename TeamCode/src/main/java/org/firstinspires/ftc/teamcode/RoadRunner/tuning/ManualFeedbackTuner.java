@@ -1,20 +1,24 @@
-package org.firstinspires.ftc.teamcode.tuning;
+package org.firstinspires.ftc.teamcode.RoadRunner.tuning;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.HyperMecanumDrive;
-import org.firstinspires.ftc.teamcode.TankDrive;
-import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
-import org.firstinspires.ftc.teamcode.TwoDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.TankDrive;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.TankDrive;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.TwoDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.TwoDeadWheelLocalizer;
 
 public final class ManualFeedbackTuner extends LinearOpMode {
     public static double DISTANCE = 64;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        if (TuningOpModes.DRIVE_CLASS.equals(HyperMecanumDrive.class)) {
+        if (org.firstinspires.ftc.teamcode.RoadRunner.tuning.TuningOpModes.DRIVE_CLASS.equals(HyperMecanumDrive.class)) {
             HyperMecanumDrive drive = new HyperMecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
             
             if (drive.localizer instanceof TwoDeadWheelLocalizer) {
@@ -35,7 +39,7 @@ public final class ManualFeedbackTuner extends LinearOpMode {
                             .lineToX(0)
                             .build());
             }
-        } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
+        } else if (org.firstinspires.ftc.teamcode.RoadRunner.tuning.TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
             TankDrive drive = new TankDrive(hardwareMap, new Pose2d(0, 0, 0));
 
             if (drive.localizer instanceof TwoDeadWheelLocalizer) {

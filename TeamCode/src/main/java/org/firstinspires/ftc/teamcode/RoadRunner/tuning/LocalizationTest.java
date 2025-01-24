@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tuning;
+package org.firstinspires.ftc.teamcode.RoadRunner.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -8,16 +8,16 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Drawing;
-import org.firstinspires.ftc.teamcode.HyperMecanumDrive;
-import org.firstinspires.ftc.teamcode.TankDrive;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.Drawing;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.TankDrive;
 
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        if (TuningOpModes.DRIVE_CLASS.equals(HyperMecanumDrive.class)) {
+        if (org.firstinspires.ftc.teamcode.RoadRunner.tuning.TuningOpModes.DRIVE_CLASS.equals(HyperMecanumDrive.class)) {
             HyperMecanumDrive drive = new HyperMecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
             waitForStart();
@@ -43,7 +43,7 @@ public class LocalizationTest extends LinearOpMode {
                 Drawing.drawRobot(packet.fieldOverlay(), drive.pose);
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
-        } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
+        } else if (org.firstinspires.ftc.teamcode.RoadRunner.tuning.TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
             TankDrive drive = new TankDrive(hardwareMap, new Pose2d(0, 0, 0));
 
             waitForStart();

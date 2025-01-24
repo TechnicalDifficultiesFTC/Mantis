@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.RoadRunner.RR1;
 
 import androidx.annotation.NonNull;
 
@@ -40,10 +40,10 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
-import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
-import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
-import org.firstinspires.ftc.teamcode.messages.PoseMessage;
+import org.firstinspires.ftc.teamcode.RoadRunner.messages.DriveCommandMessage;
+import org.firstinspires.ftc.teamcode.RoadRunner.messages.MecanumCommandMessage;
+import org.firstinspires.ftc.teamcode.RoadRunner.messages.MecanumLocalizerInputsMessage;
+import org.firstinspires.ftc.teamcode.RoadRunner.messages.PoseMessage;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -111,7 +111,7 @@ public final class HyperMecanumDrive {
 
     public final LazyImu lazyImu;
 
-    public final Localizer localizer;
+    public final org.firstinspires.ftc.teamcode.RoadRunner.RR1.Localizer localizer;
     public Pose2d pose;
 
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
@@ -121,7 +121,7 @@ public final class HyperMecanumDrive {
     private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
 
-    public class DriveLocalizer implements Localizer {
+    public class DriveLocalizer implements org.firstinspires.ftc.teamcode.RoadRunner.RR1.Localizer {
         public final Encoder leftFront, leftBack, rightBack, rightFront;
         public final IMU imu;
 

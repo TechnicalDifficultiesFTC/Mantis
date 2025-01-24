@@ -14,11 +14,12 @@ Left Joystick: Pink arm slide control (ON Y AXIS)
 Right Joystick (hypothetical): Climb arm slide control
 
 ## Buttons:
-left trigger: Tower motor forward
-right trigger: Tower motor backwards
+Left trigger: Tower motor forward
+Right trigger: Tower motor backwards
+
 Square (Also X): Toggle (climb's) low power mode
-Circle: Set both climb arms down
+Circle: Toggle climb arm lockdown
 
 ## (Intake Servo)
-left button: Intake Forwards <br>
-right button: Intake Backwards
+Left button: Intake Forwards <br>
+Right button: Intake Backwards

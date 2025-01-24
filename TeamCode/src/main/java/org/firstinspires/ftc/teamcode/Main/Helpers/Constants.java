@@ -1,9 +1,16 @@
 package org.firstinspires.ftc.teamcode.Main.Helpers;
 
+import com.acmerobotics.dashboard.config.Config;
+
 /**
  * Holds static values
  */
+@Config
 public class Constants {
+    //Auto
+    public static final double AUTO_DRIVE_SPEED = .5;
+
+    //Telemetry
     public static final boolean SHOW_CTRL1 = false;
     public static final boolean SHOW_CTRL2 = false;
 

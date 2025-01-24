@@ -12,10 +12,11 @@ import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 
-@TeleOp(name="MANTIS V:B2", group="Linear OpMode")
+@TeleOp(name="MANTIS V:B3", group="Linear OpMode")
 
 public class RobotContainer extends LinearOpMode {
-
+//TODO: Test FTC dashboard
+//TODO: Tune RoadRunner
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -73,13 +74,15 @@ public class RobotContainer extends LinearOpMode {
             telemetry.addLine("Low Power Mode Status (CLIMB): " + climb.isClimbLowPowerMode());
             telemetry.addLine();
             telemetry.addLine("Climb lockdown status: " + climb.isClimbLockedDown());
+            telemetry.addLine("Actual intakeServo power: " + intakeServo.getPower());
+            telemetry.addLine("Buttons (LEFT/RIGHT) (gamepad2): " + gamepad2.left_bumper + "/" + gamepad2.right_bumper);
+            telemetry.addLine();
             //telemetry.addLine("Slide Motor Power: " + slideMotor.getPower());
             //telemetry.addLine("Tower Motor Power: " + towerMotor.getPower());
-            telemetry.addLine();
+            //telemetry.addLine();
             //telemetry.addLine("Drivetrain Status: \n" + drivetrain.getMotorsStatusAsString());
             //telemetry.addLine();
             //telemetry.addLine("Climb positional status: \n" + climb.getClimbArmsPositionAsString());
-            telemetry.addLine();
             //telemetry.addLine("HYPOTHETICAL tower pos: " + pinkArm.getTowerMotorHypotheticalPos());
             //telemetry.addLine("ACTUAL tower pos: " + towerMotor.getCurrentPosition());
             //telemetry.addLine();

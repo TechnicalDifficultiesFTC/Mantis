@@ -1,18 +1,18 @@
-package org.firstinspires.ftc.teamcode.tuning;
+package org.firstinspires.ftc.teamcode.RoadRunner.tuning;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.HyperMecanumDrive;
-import org.firstinspires.ftc.teamcode.TankDrive;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.TankDrive;
 
 public final class SplineTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Pose2d beginPose = new Pose2d(0, 0, 0);
-        if (TuningOpModes.DRIVE_CLASS.equals(HyperMecanumDrive.class)) {
+        if (org.firstinspires.ftc.teamcode.RoadRunner.tuning.TuningOpModes.DRIVE_CLASS.equals(HyperMecanumDrive.class)) {
             HyperMecanumDrive drive = new HyperMecanumDrive(hardwareMap, beginPose);
 
             waitForStart();
@@ -22,7 +22,7 @@ public final class SplineTest extends LinearOpMode {
                         .splineTo(new Vector2d(30, 30), Math.PI / 2)
                         .splineTo(new Vector2d(0, 60), Math.PI)
                         .build());
-        } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
+        } else if (org.firstinspires.ftc.teamcode.RoadRunner.tuning.TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
             TankDrive drive = new TankDrive(hardwareMap, beginPose);
 
             waitForStart();
