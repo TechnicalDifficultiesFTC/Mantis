@@ -50,7 +50,7 @@ public class RobotContainer extends LinearOpMode {
 
         //PinkArm initial setup
         pinkArm.zeroEncoders(); //WILL KILL MOTORS
-        pinkArm.restartMotors(); //Fingers crossed will restart motors
+        pinkArm.restartMotors();
 
         telemetry.addLine("Systems Registered!");
         telemetry.update();
@@ -62,6 +62,7 @@ public class RobotContainer extends LinearOpMode {
 
         while (opModeIsActive()) { //Primary loop
             //TODO: Implement pinkarm FFL debugging
+            //TODO: Verify concerns about the pose parameter of the ThreeDeadWheelLocalizer class constructor
             //Send input to subsystems from processing
             drivetrain.processInput(gamepad1);
             pinkArm.processInput(gamepad2);

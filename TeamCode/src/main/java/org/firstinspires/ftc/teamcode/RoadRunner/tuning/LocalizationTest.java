@@ -16,7 +16,6 @@ public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
         if (org.firstinspires.ftc.teamcode.RoadRunner.tuning.TuningOpModes.DRIVE_CLASS.equals(HyperMecanumDrive.class)) {
             HyperMecanumDrive drive = new HyperMecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 

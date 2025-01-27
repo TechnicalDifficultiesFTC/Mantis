@@ -6,7 +6,6 @@ public class Utils {
 
     /**
      * Generates a random "voice line" to display on the telemetry feed, just for fun, servos no real purpose
-     *
      * @return [String] Semi random cool sounding piece of text
      */
     public static String generateMOTMLine() {
@@ -28,7 +27,6 @@ public class Utils {
 
     /**
      * Returns a boolean depending on the amount of depth on a trigger press, used to do an action with the trigger that only requires t/f
-     *
      * @param triggerValue Can be found at gamepad.left_trigger() or gamepad.right_trigger()
      * @return [boolean] If trigger has passed threshold
      */

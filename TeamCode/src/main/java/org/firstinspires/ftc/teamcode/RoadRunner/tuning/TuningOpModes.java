@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class TuningOpModes {
-    // TODO: change this to TankDrive.class if you're using tank
     public static final Class<?> DRIVE_CLASS = HyperMecanumDrive.class;
 
     public static final String GROUP = "quickstart";
@@ -55,27 +54,27 @@ public final class TuningOpModes {
         DriveViewFactory dvf;
         if (DRIVE_CLASS.equals(HyperMecanumDrive.class)) {
             dvf = hardwareMap -> {
-                HyperMecanumDrive md = new HyperMecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+                HyperMecanumDrive mecanumDrive = new HyperMecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
                 List<Encoder> leftEncs = new ArrayList<>(), rightEncs = new ArrayList<>();
                 List<Encoder> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();
-                if (md.localizer instanceof HyperMecanumDrive.DriveLocalizer) {
-                    HyperMecanumDrive.DriveLocalizer dl = (HyperMecanumDrive.DriveLocalizer) md.localizer;
+                if (mecanumDrive.localizer instanceof HyperMecanumDrive.DriveLocalizer) {
+                    HyperMecanumDrive.DriveLocalizer dl = (HyperMecanumDrive.DriveLocalizer) mecanumDrive.localizer;
                     leftEncs.add(dl.leftFront);
                     leftEncs.add(dl.leftBack);
                     rightEncs.add(dl.rightFront);
                     rightEncs.add(dl.rightBack);
-                } else if (md.localizer instanceof ThreeDeadWheelLocalizer) {
-                    ThreeDeadWheelLocalizer dl = (ThreeDeadWheelLocalizer) md.localizer;
+                } else if (mecanumDrive.localizer instanceof ThreeDeadWheelLocalizer) {
+                    ThreeDeadWheelLocalizer dl = (ThreeDeadWheelLocalizer) mecanumDrive.localizer;
                     parEncs.add(dl.par0);
                     parEncs.add(dl.par1);
                     perpEncs.add(dl.perp);
-                } else if (md.localizer instanceof TwoDeadWheelLocalizer) {
-                    TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) md.localizer;
+                } else if (mecanumDrive.localizer instanceof TwoDeadWheelLocalizer) {
+                    TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) mecanumDrive.localizer;
                     parEncs.add(dl.par);
                     perpEncs.add(dl.perp);
                 } else {
-                    throw new RuntimeException("unknown localizer: " + md.localizer.getClass().getName());
+                    throw new RuntimeException("unknown localizer: " + mecanumDrive.localizer.getClass().getName());
                 }
 
                 return new DriveView(
@@ -86,19 +85,19 @@ public final class TuningOpModes {
                         HyperMecanumDrive.PARAMS.maxProfileAccel,
                         hardwareMap.getAll(LynxModule.class),
                         Arrays.asList(
-                                md.leftFront,
-                                md.leftBack
+                                mecanumDrive.leftFront,
+                                mecanumDrive.leftBack
                         ),
                         Arrays.asList(
-                                md.rightFront,
-                                md.rightBack
+                                mecanumDrive.rightFront,
+                                mecanumDrive.rightBack
                         ),
                         leftEncs,
                         rightEncs,
                         parEncs,
                         perpEncs,
-                        md.lazyImu,
-                        md.voltageSensor,
+                        mecanumDrive.lazyImu,
+                        mecanumDrive.voltageSensor,
                         () -> new MotorFeedforward(HyperMecanumDrive.PARAMS.kS,
                                 HyperMecanumDrive.PARAMS.kV / HyperMecanumDrive.PARAMS.inPerTick,
                                 HyperMecanumDrive.PARAMS.kA / HyperMecanumDrive.PARAMS.inPerTick)
