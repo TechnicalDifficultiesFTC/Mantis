@@ -21,7 +21,10 @@ public enum DeviceRegistry {
      */
     LEFT_THROUGHBORE_ENC("leftEnc"),
     RIGHT_THROUGHBORE_ENC("rightEnc"),
-    YAW_THROUGHBORE_ENC("yaw");
+    YAW_THROUGHBORE_ENC("yaw"),
+
+    //IMU
+    IMU("imu");
 
 
     private final String deviceName;

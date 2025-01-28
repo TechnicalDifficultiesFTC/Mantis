@@ -8,18 +8,18 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class Constants {
     //Auto
-    public static final double AUTO_DRIVE_SPEED = .5;
+    public static double AUTO_DRIVE_SPEED = .5;
 
     //Telemetry
-    public static final boolean SHOW_CTRL1 = false;
-    public static final boolean SHOW_CTRL2 = false;
+    public static boolean SHOW_CTRL1 = false;
+    public static boolean SHOW_CTRL2 = false;
 
     //Used in beaUtils.triggerBoolean() to determine the amount a trigger needs to be pressed to return true
     public static final double TRIGGER_THRESHOLD = .1;
 
     //Used for software underclock
-    public static final double MIN_SPEED = 0.33;
-    public static final double MAX_SPEED = 1;
+    public static double MIN_SPEED = 0.33;
+    public static double MAX_SPEED = 1;
 
     //Necessary encoder information
     private static final int TOWER_ENCODER_TYPE = 4; //Quadrature
@@ -42,10 +42,10 @@ public class Constants {
     public static final boolean BACK_RIGHT_DT_MOTOR_FORWARD = false;
 
     //Pinkarm Vars
-    public static final int SCALER = 50;
+    public static int SCALER = 50;
     //End effector servo
-    public static final double OUTTAKE_POWER = .5;
-    public static final double INTAKE_POWER = 1;
+    public static double OUTTAKE_POWER = .5;
+    public static double INTAKE_POWER = 1;
 
     //Tag funzies :)
     public static String dasshTag = "|- Dassh01 -|";

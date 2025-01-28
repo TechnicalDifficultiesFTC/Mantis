@@ -57,8 +57,6 @@ import java.util.List;
 public final class HyperMecanumDrive {
     public static class Params {
         // IMU orientation
-        // TODO: fill in these values based on
-        //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
@@ -235,8 +233,7 @@ public final class HyperMecanumDrive {
         leftBack.setDirection(Constants.BACK_LEFT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(Constants.BACK_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
 
-        //TODO: Check hardwaremap name for this- make sure its actually called imu
-        lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
+        lazyImu = new LazyImu(hardwareMap, DeviceRegistry.IMU.str(), new RevHubOrientationOnRobot(
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
