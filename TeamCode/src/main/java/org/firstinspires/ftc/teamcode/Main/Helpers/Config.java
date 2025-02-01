@@ -1,25 +1,32 @@
 package org.firstinspires.ftc.teamcode.Main.Helpers;
 
-import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * Holds static values
  */
-@Config
-public class Constants {
+@com.acmerobotics.dashboard.config.Config
+public class Config {
     //Auto
     public static double AUTO_DRIVE_SPEED = .5;
 
     //Telemetry
+    public static boolean SHOW_DT_STATUS = false; //Where DT is "Drivetrain"
+    public static boolean SHOW_ARM_STATUS = false;
     public static boolean SHOW_CTRL1 = false;
     public static boolean SHOW_CTRL2 = false;
+    public static boolean SHOW_ENCODER_DATA = true;
 
     //Used in beaUtils.triggerBoolean() to determine the amount a trigger needs to be pressed to return true
     public static final double TRIGGER_THRESHOLD = .1;
 
     //Used for software underclock
-    public static double MIN_SPEED = 0.33;
-    public static double MAX_SPEED = 1;
+    public static double MIN_CLIMB_SPEED = .5; //Negative because reversal
+    public static double MAX_CLIMB_SPEED = 1;
+    public static float CLIMB_LOCK_DOWN_POWER = 1;
+
+    public final static double MIN_DT_SPEED = .5;
+    public final static double MAX_DT_SPEED = 1;
 
     //Necessary encoder information
     private static final int TOWER_ENCODER_TYPE = 4; //Quadrature
@@ -42,10 +49,18 @@ public class Constants {
     public static final boolean BACK_RIGHT_DT_MOTOR_FORWARD = false;
 
     //Pinkarm Vars
-    public static int SCALER = 50;
+    public static double SCALER = 25;
     //End effector servo
-    public static double OUTTAKE_POWER = .5;
-    public static double INTAKE_POWER = 1;
+    public static double SERVO_OUTTAKE_POWER = -.5;
+    public static double SERVO_INTAKE_POWER = 1;
+    /*
+    RunModes:
+    RUN_TO_POSITION -> Uses encoder feedback (FFL) to push to a position set by .setTargetPosition(int position) [0,360]?, then holds the last given position
+    RUN_USING_ENCODER -> Uses encoder feedback to push at a velocity given on a range of [-1,1] set by .setPower(int velocity)
+    RUN_WITHOUT_ENCODER -> SHOULD ONLY BE USED ON MOTORS W/O ENCODERS, uses no feedback to attempt to gain a velocity
+     */
+
+    public static DcMotor.RunMode ARM_MODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
     //Tag funzies :)
     public static String dasshTag = "|- Dassh01 -|";

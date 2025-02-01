@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Main.Subsystems;
 
-import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -39,10 +39,10 @@ public class MecanumDrivetrain {
         frontRightMotor = FRM;
         backRightMotor = BRM;
         //These motors have to be set to reverse by standard so that Mecanum works
-        frontLeftMotor.setDirection(Constants.FRONT_LEFT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
-        frontRightMotor.setDirection(Constants.FRONT_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(Constants.BACK_LEFT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(Constants.BACK_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+        frontLeftMotor.setDirection(Config.FRONT_LEFT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+        frontRightMotor.setDirection(Config.FRONT_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(Config.BACK_LEFT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(Config.BACK_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
     }
 
     /**
@@ -66,7 +66,7 @@ public class MecanumDrivetrain {
             lowPowerMode = !lowPowerMode;
         }
 
-        modulator = lowPowerMode ? Constants.MIN_SPEED : Constants.MAX_SPEED;
+        modulator = lowPowerMode ? Config.MIN_DT_SPEED : Config.MAX_DT_SPEED;
 
         y = -gamepad.left_stick_y;
         x = gamepad.left_stick_x * 1.1;

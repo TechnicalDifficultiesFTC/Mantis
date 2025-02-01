@@ -32,7 +32,7 @@ public class Utils {
      */
     public static boolean triggerBoolean(double triggerValue) {
         //Compares the float value to threshold
-        return (triggerValue > Constants.TRIGGER_THRESHOLD);
+        return (triggerValue > Config.TRIGGER_THRESHOLD);
     }
 }
 

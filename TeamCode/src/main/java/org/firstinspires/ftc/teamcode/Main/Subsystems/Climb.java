@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
-import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
 
 public class Climb {
@@ -33,7 +32,7 @@ public class Climb {
             throw new RuntimeException();
         }
 
-        double modulator = isLowPowerMode ? Constants.MIN_SPEED : Constants.MAX_SPEED;
+        double modulator = isLowPowerMode ? Config.MIN_CLIMB_SPEED : Config.MAX_CLIMB_SPEED;
 
         climbMotorRight.setPower(power*modulator);
         climbMotorLeft.setPower(power*modulator);
@@ -60,6 +59,6 @@ public class Climb {
 
         //If climb is locked to down send climb motors down
         //If climb is unlocked then power scales off of the right stick y
-        setArmsPower(climbLockDown ? -1 : gamepad.right_stick_y);
+        setArmsPower(climbLockDown ? Config.CLIMB_LOCK_DOWN_POWER : gamepad.right_stick_y);
     }
 }

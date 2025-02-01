@@ -1,22 +1,22 @@
-package org.firstinspires.ftc.teamcode.Main;
+package org.firstinspires.ftc.teamcode.Main.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Main.Helpers.Constants;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 
-@Autonomous(name="MANTIS AUTO V:A2 Strafe Left", group="Linear OpMode")
-public class AutoRobotContainer extends LinearOpMode {
+@Autonomous(name="MANTIS AUTO: Strafe Left", group="Linear OpMode")
+public class EmergencyAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
         final String MOTM = Utils.generateMOTMLine();
 
-        telemetry.addLine(Constants.dasshTag);
+        telemetry.addLine(Config.dasshTag);
         //Grab devices
 
         //Drivetrain
@@ -32,8 +32,8 @@ public class AutoRobotContainer extends LinearOpMode {
         telemetry.clear();
 
         while (opModeIsActive()) {
-            mecanumDrivetrain.strafeLeft(Constants.AUTO_DRIVE_SPEED);
-            telemetry.addLine("hii ran mecanum dt strafeleft ran at speed: " + Constants.AUTO_DRIVE_SPEED);
+            mecanumDrivetrain.strafeLeft(Config.AUTO_DRIVE_SPEED);
+            telemetry.addLine("hii ran mecanum dt strafeleft ran at speed: " + Config.AUTO_DRIVE_SPEED);
             telemetry.update();
         }
     }
