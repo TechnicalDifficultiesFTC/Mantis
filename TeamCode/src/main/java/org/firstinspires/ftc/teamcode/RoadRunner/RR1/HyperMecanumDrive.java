@@ -62,13 +62,13 @@ public final class HyperMecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
-        public double inPerTick = 1;
+        public double inPerTick = (117.25 / 210549.0);
         public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 0;
+        public double trackWidthTicks = 3.2060679818188897;
 
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0;
+        public double kS = 0.9504307141805839;
+        public double kV = 0.00009783786945115015;
         public double kA = 0;
 
         // path profile parameters (in inches)
@@ -81,8 +81,8 @@ public final class HyperMecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 0.0;
-        public double lateralGain = 0.0;
+        public double axialGain = 5;
+        public double lateralGain = 10;
         public double headingGain = 0.0; // shared with turn
 
         public double axialVelGain = 0.0;

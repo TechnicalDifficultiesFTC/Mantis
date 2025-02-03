@@ -92,7 +92,9 @@ public class StandardTeleop extends LinearOpMode {
             telemetry.addLine("Buttons (LEFT/RIGHT) (gamepad2): " + gamepad2.left_bumper + "/" + gamepad2.right_bumper);
             telemetry.addLine("Tower Motor Pos: " + pinkArm.getTowerMotorHypotheticalPos());
             telemetry.addLine();
-
+            telemetry.addLine("Slide arm extension (ticks): " + pinkArm.pinkArmExtensionTicks);
+            telemetry.addLine("Slide arm extension limit reached?: " + !(pinkArm.pinkArmExtensionTicks > -2770));
+            telemetry.addLine();
             if (Config.SHOW_ARM_STATUS) {
                 telemetry.addLine();
                 telemetry.addLine("Slide Motor Power: " + slideMotor.getPower());

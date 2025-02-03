@@ -30,12 +30,21 @@ public class EmergencyAuto extends LinearOpMode {
 
         waitForStart();
         telemetry.clear();
+        double power = .35;
+        frontRightMotor.setPower(power);
+        backLeftMotor.setPower(power);
 
-        while (opModeIsActive()) {
-            mecanumDrivetrain.strafeLeft(Config.AUTO_DRIVE_SPEED);
-            telemetry.addLine("hii ran mecanum dt strafeleft ran at speed: " + Config.AUTO_DRIVE_SPEED);
-            telemetry.update();
-        }
+        frontLeftMotor.setPower(-power);
+        backRightMotor.setPower(-power);
+        telemetry.addLine("hii ran mecanum dt strafeleft ran at speed: " + Config.AUTO_DRIVE_SPEED);
+        telemetry.update();
+        Thread.sleep(5000);
+        power = 0;
+        frontRightMotor.setPower(power);
+        backLeftMotor.setPower(power);
+        frontLeftMotor.setPower(-power);
+        backRightMotor.setPower(-power);
+
     }
 
 }

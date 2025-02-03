@@ -15,7 +15,7 @@ public class Config {
     public static boolean SHOW_ARM_STATUS = false;
     public static boolean SHOW_CTRL1 = false;
     public static boolean SHOW_CTRL2 = false;
-    public static boolean SHOW_ENCODER_DATA = true;
+    public static boolean SHOW_ENCODER_DATA = false;
 
     //Used in beaUtils.triggerBoolean() to determine the amount a trigger needs to be pressed to return true
     public static final double TRIGGER_THRESHOLD = .1;
@@ -51,7 +51,7 @@ public class Config {
     //Pinkarm Vars
     public static double SCALER = 25;
     //End effector servo
-    public static double SERVO_OUTTAKE_POWER = -.5;
+    public static double SERVO_OUTTAKE_POWER = -.7;
     public static double SERVO_INTAKE_POWER = 1;
     /*
     RunModes:
