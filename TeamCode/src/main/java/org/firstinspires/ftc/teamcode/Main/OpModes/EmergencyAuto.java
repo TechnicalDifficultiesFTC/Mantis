@@ -29,6 +29,9 @@ public class EmergencyAuto extends LinearOpMode {
         mecanumDrivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
+
+        if (isStopRequested()) return;
+
         telemetry.clear();
         double power = .35;
         frontRightMotor.setPower(power);
