@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Main.Subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import androidx.annotation.NonNull;
@@ -9,10 +10,13 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
+import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 
 public class PinkArm extends Utils {
@@ -20,7 +24,7 @@ public class PinkArm extends Utils {
     boolean leftTriggerPressed = false;
     boolean rightTriggerPressed = false;
     public int towerPosIncreasing = -1;
-    DcMotor towerMotor, slideMotor;
+    public DcMotor towerMotor, slideMotor;
     public CRServo intakeServo;
     double towerMotorPower, slideMotorPower, intakeServoPower;
     public int towerMotorPos;
@@ -28,15 +32,14 @@ public class PinkArm extends Utils {
 
     /**
      * Initialize PinkArm and pass in PinkArm motors and servo objects
-     * @param towerMotor Tower Motor
-     * @param slideMotor Slide Motor
-     * @param intakeServo CRServo Intake Servo
      */
-    public PinkArm (DcMotor towerMotor, DcMotor slideMotor, CRServo intakeServo) {
-        this.towerMotor = towerMotor;
-        this.slideMotor = slideMotor;
-        this.intakeServo = intakeServo;
+    public PinkArm (HardwareMap hardwareMap) {
+        this.towerMotor = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_LEFT.str());;
+        this.slideMotor = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_LEFT.str());;
+        this.intakeServo = hardwareMap.crservo.get(DeviceRegistry.INTAKE_SERVO.str());
         this.runToPositionINACTIVE = (Config.ARM_MODE != DcMotor.RunMode.RUN_TO_POSITION);
+
+        intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -45,6 +48,21 @@ public class PinkArm extends Utils {
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    public String pastExtensionLimit() {
+        boolean pastLimit = pinkArmExtensionTicks < Config.pinkArmExtensionLimitTicks;
+        if (pinkArmExtensionTicks < -1500 && !pastLimit) {
+            return "Close to limit";
+        }
+        else if (pinkArmExtensionTicks < -2000 && !pastLimit) {
+            return "Extremely Close to limit!!";
+        }
+        else if (pastLimit) {
+            return "PAST LIMIT!";
+        }
+        else {
+            return "Within Limit";
+        }
+    }
     public class Outtake implements Action {
         private boolean initialized = false;
 

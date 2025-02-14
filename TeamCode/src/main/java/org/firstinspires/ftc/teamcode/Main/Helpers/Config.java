@@ -62,6 +62,16 @@ public class Config {
 
     public static DcMotor.RunMode ARM_MODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
+    public static int pinkArmExtensionLimitTicks = -2700;
+
     //Tag funzies :)
-    public static String dasshTag = "|- Dassh01 -|";
+    public static String dasshTag = "                                                 88            \n" +
+            "                                           ,d    \"\"            \n" +
+            "                                           88                  \n" +
+            "88,dPYba,,adPYba,  ,adPPYYba, 8b,dPPYba, MM88MMM 88 ,adPPYba,  \n" +
+            "88P'   \"88\"    \"8a \"\"     `Y8 88P'   `\"8a  88    88 I8[    \"\"  \n" +
+            "88      88      88 ,adPPPPP88 88       88  88    88  `\"Y8ba,   \n" +
+            "88      88      88 88,    ,88 88       88  88,   88 aa    ]8I  \n" +
+            "88      88      88 `\"8bbdP\"Y8 88       88  \"Y888 88 `\"YbbdP\"'  \n" +
+            "                                                               ";
 }

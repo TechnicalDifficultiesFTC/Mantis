@@ -41,17 +41,10 @@ public class StandardTeleop extends LinearOpMode {
         CRServo intakeServo = hardwareMap.crservo.get(DeviceRegistry.INTAKE_SERVO.str());
         intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        DcMotor towerMotor = hardwareMap.dcMotor.get(DeviceRegistry.TOWER_MOTOR.str());
-        DcMotor slideMotor = hardwareMap.dcMotor.get(DeviceRegistry.SLIDE_MOTOR.str());
-
-        //Climb
-        DcMotor climbMotorLeft = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_LEFT.str());
-        DcMotor climbMotorRight = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_RIGHT.str());
-
         //Create subsystem singletons
         MecanumDrivetrain drivetrain = new MecanumDrivetrain(frontLeftMotor,backLeftMotor,frontRightMotor,backRightMotor);
-        PinkArm pinkArm = new PinkArm(towerMotor,slideMotor,intakeServo);
-        Climb climb = new Climb(climbMotorLeft,climbMotorRight);
+        PinkArm pinkArm = new PinkArm(hardwareMap);
+        Climb climb = new Climb(hardwareMap);
 
         //Drivetrain initial setup
         drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -94,16 +87,16 @@ public class StandardTeleop extends LinearOpMode {
             telemetry.addLine("Tower Motor Pos: " + pinkArm.getTowerMotorHypotheticalPos());
             telemetry.addLine();
             telemetry.addLine("Slide arm extension (ticks): " + pinkArm.pinkArmExtensionTicks);
-            telemetry.addLine("Slide arm extension limit reached?: " + !(pinkArm.pinkArmExtensionTicks > -2770));
+            telemetry.addLine("Slide arm extension limit reached?: " + pinkArm.pastExtensionLimit());
             telemetry.addLine();
             if (Config.SHOW_ARM_STATUS) {
                 telemetry.addLine();
-                telemetry.addLine("Slide Motor Power: " + slideMotor.getPower());
-                telemetry.addLine("Tower Motor Power: " + towerMotor.getPower());
+                telemetry.addLine("Slide Motor Power: " + pinkArm.slideMotor.getPower());
+                telemetry.addLine("Tower Motor Power: " + pinkArm.towerMotor.getPower());
                 telemetry.addLine();
                 telemetry.addLine("Climb positional status: \n" + climb.getClimbArmsPositionAsString());
                 telemetry.addLine("HYPOTHETICAL tower pos: " + pinkArm.getTowerMotorHypotheticalPos());
-                telemetry.addLine("ACTUAL tower pos: " + towerMotor.getCurrentPosition());
+                telemetry.addLine("ACTUAL tower pos: " + pinkArm.towerMotor.getCurrentPosition());
                 telemetry.addLine();
             }
             if (Config.SHOW_DT_STATUS) {

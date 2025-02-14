@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.Main.Subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
+import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 
 public class Climb {
     DcMotor climbMotorLeft;
@@ -14,9 +18,9 @@ public class Climb {
     boolean climbLockDown = false;
     Debounce circleDebounce = new Debounce();
     Debounce sqaureDebounce = new Debounce();
-    public Climb (DcMotor climbMotorLeft, DcMotor climbMotorRight) {
-        this.climbMotorLeft = climbMotorLeft;
-        this.climbMotorRight = climbMotorRight;
+    public Climb (HardwareMap hardwareMap) {
+        this.climbMotorLeft = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_LEFT.str());
+        this.climbMotorRight = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_RIGHT.str());
 
         climbMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         climbMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
