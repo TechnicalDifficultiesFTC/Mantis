@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Main.OpModes;
 
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
@@ -73,12 +72,14 @@ public class StandardTeleop extends LinearOpMode {
         //Nothing past this point will run until the start button is pressed
         waitForStart();
 
+        telemetry.setMsTransmissionInterval(25);
+
         if (isStopRequested()) return;
 
         while (opModeIsActive()) { //Primary loop
             //Send input to subsystems from processing
             drivetrain.processInput(gamepad1);
-            pinkArm.processInput(gamepad2);
+            pinkArm.processInput(gamepad2,false);
             climb.processInput(gamepad2);
 
             //Telemetry
@@ -94,7 +95,7 @@ public class StandardTeleop extends LinearOpMode {
             telemetry.addLine("Tower Motor Pos: " + pinkArm.getTowerMotorHypotheticalPos());
             telemetry.addLine();
             telemetry.addLine("Slide arm extension (ticks): " + pinkArm.pinkArmExtensionTicks);
-            telemetry.addLine("Slide arm extension limit reached?: " + !(pinkArm.pinkArmExtensionTicks > -2770));
+            telemetry.addLine("Slide arm extension limit reached?: " + pinkArm.pinkArmHasExceededBounds());
             telemetry.addLine();
             if (Config.SHOW_ARM_STATUS) {
                 telemetry.addLine();

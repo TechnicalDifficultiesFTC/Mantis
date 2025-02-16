@@ -28,16 +28,6 @@ public class Config {
     public final static double MIN_DT_SPEED = .5;
     public final static double MAX_DT_SPEED = 1;
 
-    //Necessary encoder information
-    private static final int TOWER_ENCODER_TYPE = 4; //Quadrature
-    private static final int SLIDE_ENCODER_TYPE = 4; //Quadrature
-
-    private static final double TOWER_MOTOR_PPR = 5281.1;
-    private static final double SLIDE_MOTOR_PPR = 587.7;
-
-    public static final double TOWER_MOTOR_CPR = TOWER_MOTOR_PPR * TOWER_ENCODER_TYPE;
-    public static final double SLIDE_MOTOR_CPR = SLIDE_MOTOR_PPR * SLIDE_ENCODER_TYPE;
-
     //Mess around with these until the drivetrain drivetrains
     //Btw setting a value to false is setting the motor to go in reverse when given a positive signal
 
@@ -53,6 +43,9 @@ public class Config {
     //End effector servo
     public static double SERVO_OUTTAKE_POWER = -.7;
     public static double SERVO_INTAKE_POWER = 1;
+
+    //TODO: Update & test
+    public static double pinkArmExtensionCutoff = 0; // MEASURED IN TICKS, measure to 45 degrees
     /*
     RunModes:
     RUN_TO_POSITION -> Uses encoder feedback (FFL) to push to a position set by .setTargetPosition(int position) [0,360]?, then holds the last given position

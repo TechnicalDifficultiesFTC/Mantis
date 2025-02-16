@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Main.Subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -11,14 +9,16 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
+import org.firstinspires.ftc.teamcode.Main.Helpers.TowerPosMovementStatus;
 
 public class PinkArm extends Utils {
     public int pinkArmExtensionTicks = 0;
+    public int pinkArmRotationalTicks = 0;
     boolean leftTriggerPressed = false;
     boolean rightTriggerPressed = false;
+    public TowerPosMovementStatus towerPosMovementStatus = TowerPosMovementStatus.NOT_MOVING;
     public int towerPosIncreasing = -1;
     DcMotor towerMotor, slideMotor;
     public CRServo intakeServo;
@@ -67,66 +67,73 @@ public class PinkArm extends Utils {
      * Main processing loop of PinkArm
      * @param gamepad All input from gamepad 2 as gamepad obj
      */
-    //TODO: TEST!!
-    public void processInput(Gamepad gamepad) {
-        //TODO: Fix pinkarm FFL stabilization
-        /*
-        Cases:
-        A) Run standard logic if auto stabilize is off and the runmode isn't run to position
-        B) Run stabilization logic if auto stabilize is on and the runmode is run to position
-        ELSE) Error out
-         */
-        setIntakeServoPower(gamepad);
-        setArmPowers(gamepad);
-    }
+    public void processInput(Gamepad gamepad, boolean runWithEncoders) {
 
-    public void processInput(Gamepad gamepad, DcMotor.RunMode runmode) {
-        setIntakeServoPower(gamepad);
-        setArmPowersUsingEncoder(gamepad);
-    }
-
-    public void setArmPowers(@NonNull Gamepad gamepad) {
-        pinkArmExtensionTicks = slideMotor.getCurrentPosition();
-
-        if (pinkArmExtensionTicks > -2770) {
-            slideMotorPower = gamepad.left_stick_y;
-            slideMotor.setPower(slideMotorPower);
+        if (!runWithEncoders) { //Standard Mode
+            setIntakeServoPower(gamepad);
+            setArmPowers(gamepad);
         }
         else {
-            slideMotorPower = gamepad.left_stick_y;
-            slideMotor.setPower(slideMotorPower);
+            //TODO: Verify & debug
+            setIntakeServoPower(gamepad);
+            setArmPowersUsingEncoder(gamepad);
         }
 
+    }
+
+
+
+    public boolean pinkArmHasExceededBounds() {
+        return (pinkArmExtensionTicks < -2770);
+    }
+
+    /**
+     * This method determines if the pinkarm rotational limit needs to be applied
+     * by seeing if the current ticks are above the amount when pink arm extension can be deregulated
+     * @return True if the pink arm extension limit should be applied, False if the pink arm extension limit shouldn't be
+     */
+    public boolean pinkArmExtensionLimitShouldBeApplied() {
+        return !(pinkArmRotationalTicks > Config.pinkArmExtensionCutoff);
+    }
+    public void setArmPowers(@NonNull Gamepad gamepad) {
+        pinkArmExtensionTicks = slideMotor.getCurrentPosition();
+        pinkArmRotationalTicks = towerMotor.getCurrentPosition();
+
+        if (pinkArmHasExceededBounds() && pinkArmExtensionLimitShouldBeApplied()) {
+            slideMotor.setPower(-1);
+        }
+
+        slideMotorPower = gamepad.left_stick_y;
+        slideMotor.setPower(slideMotorPower);
 
         towerMotorPower = (gamepad.left_trigger - gamepad.right_trigger);
         towerMotor.setPower(towerMotorPower);
     }
     public void setArmPowersUsingEncoder(@NonNull Gamepad gamepad) {
-        //TODO: Test telemetry handles
         leftTriggerPressed = triggerBoolean(gamepad.left_trigger);
         rightTriggerPressed = triggerBoolean(gamepad.right_trigger);
 
         if (leftTriggerPressed && rightTriggerPressed) {
-            towerPosIncreasing = -1;
+            towerPosMovementStatus = TowerPosMovementStatus.NOT_MOVING;
         }
         else if (leftTriggerPressed) {
-            towerMotorPos += (int) ( gamepad.left_trigger * Config.SCALER);
-            towerPosIncreasing = 1;
+            towerMotorPos += (int) (gamepad.left_trigger * Config.SCALER);
+            towerPosMovementStatus = TowerPosMovementStatus.MOVING_UP;
         }
         else if (rightTriggerPressed) {
             towerMotorPos -= (int) (gamepad.right_trigger * Config.SCALER);
-            towerPosIncreasing = 2;
+            towerPosMovementStatus = TowerPosMovementStatus.MOVING_DOWN;
         }
         else {
-            towerPosIncreasing = -1;
+            towerPosMovementStatus = TowerPosMovementStatus.NOT_MOVING;
         }
 
         slideMotorPower = gamepad.left_stick_y;
 
         towerMotor.setTargetPosition(towerMotorPos);
         slideMotor.setPower(slideMotorPower);
-
     }
+
     public void setIntakeServoPower(Gamepad gamepad) {
         if (gamepad.left_bumper) { //Intake
             intakeServoPower = Config.SERVO_INTAKE_POWER;
@@ -144,7 +151,6 @@ public class PinkArm extends Utils {
     }
     public void setPosZero() {
         towerMotor.setTargetPosition(0);
-        //slideMotor.setTargetPosition(0);
     }
     /**
      * Sets both the towerMotor and slideMotor to a unanimous mode

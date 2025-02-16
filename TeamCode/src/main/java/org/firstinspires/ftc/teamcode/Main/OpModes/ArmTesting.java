@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
+import org.firstinspires.ftc.teamcode.Main.Helpers.TowerPosMovementStatus;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 
 @TeleOp(name="ARM_DEBUGGER", group="Linear OpMode")
@@ -55,29 +56,31 @@ public class ArmTesting extends LinearOpMode {
 
             int towerEncoderVelocity = towerEncoder.getPositionAndVelocity().velocity;
             int towerEncoderPosition = towerEncoder.getPositionAndVelocity().position;
-            int towerPosIncreasing = pinkArm.towerPosIncreasing;
+            TowerPosMovementStatus towerPosMovementStatus = pinkArm.towerPosMovementStatus;
 
             telemetry.addLine("Overview: Online");
             telemetry.addLine();
-            pinkArm.processInput(gamepad2, DcMotor.RunMode.RUN_TO_POSITION); //Contains telemetry data
+
+            pinkArm.processInput(gamepad2, true); //Contains telemetry data
             telemetry.addLine("Tower OVERFLOW Encoder status: " +
                     "\nTower Overflow Encoder Velocity: " + towerEncoderVelocity +
                     "\nTower Overflow Encoder Position: " + towerEncoderPosition );
+            
             telemetry.addLine();
 
-            if (towerPosIncreasing == 1) {
+            if (towerPosMovementStatus == TowerPosMovementStatus.MOVING_UP) {
                 telemetry.addLine("Tower Motor Pos Incremented " +
                         "\nTower Motor pos (internal) = " + pinkArm.towerMotorPos +
                         "\nTower Motor pos (desired) = " + towerMotor.getTargetPosition() +
                         "\nTower Motor pos (actual) = " + towerMotor.getCurrentPosition());
             }
-            else if (towerPosIncreasing == 2) {
+            else if (towerPosMovementStatus == TowerPosMovementStatus.MOVING_DOWN) {
                 telemetry.addLine("Tower Motor Pos Decremented " +
                         "\nTower Motor pos (internal) = " + pinkArm.towerMotorPos +
                         "\nTower Motor pos (desired) = " + towerMotor.getTargetPosition() +
                         "\nTower Motor pos (actual) = " + towerMotor.getCurrentPosition());
             }
-            else if (towerPosIncreasing == -1) {
+            else if (towerPosMovementStatus == TowerPosMovementStatus.NOT_MOVING) {
                 telemetry.addLine("Tower Motor Pos Neutral " +
                         "\nTower Motor pos (internal) = " + pinkArm.towerMotorPos +
                         "\nTower Motor pos (desired) = " + towerMotor.getTargetPosition() +
