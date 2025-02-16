@@ -14,8 +14,6 @@ public class EmergencyAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        final String MOTM = Utils.generateMOTMLine();
-
         telemetry.addLine(Config.dasshTag);
         //Grab devices
 

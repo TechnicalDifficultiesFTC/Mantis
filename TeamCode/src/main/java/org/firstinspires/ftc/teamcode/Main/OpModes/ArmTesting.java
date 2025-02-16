@@ -32,7 +32,7 @@ public class ArmTesting extends LinearOpMode {
 
         boolean increasePower = false;
 
-        PinkArm pinkArm = new PinkArm(towerMotor,slideMotor,intakeServo);
+        PinkArm pinkArm = new PinkArm(hardwareMap);
 
         towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         towerMotor.setTargetPosition(20);
