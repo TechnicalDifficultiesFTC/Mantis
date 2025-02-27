@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Main.OpModes;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,43 +9,54 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 
-@Autonomous(name="MANTIS AUTO: Strafe Left", group="Linear OpMode")
+@Autonomous(name="MANTIS AUTO: Strafe Left w/o Enc", group="Linear OpMode")
 public class EmergencyAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addLine(Config.dasshTag);
-        //Grab devices
 
-        //Drivetrain
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get(DeviceRegistry.FRONT_LEFT_MOTOR.str());
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get(DeviceRegistry.BACK_LEFT_MOTOR.str());
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get(DeviceRegistry.FRONT_RIGHT_MOTOR.str());
-        DcMotor backRightMotor = hardwareMap.dcMotor.get(DeviceRegistry.BACK_RIGHT_MOTOR.str());
-
-        MecanumDrivetrain mecanumDrivetrain = new MecanumDrivetrain(frontLeftMotor,backLeftMotor,frontRightMotor,backRightMotor);
+        MecanumDrivetrain mecanumDrivetrain = new MecanumDrivetrain(hardwareMap);
         mecanumDrivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        waitForStart();
+        Pose2d initialPose = new Pose2d(20,62,Math.toRadians(-90));
+        HyperMecanumDrive hyperMecanumDrive = new HyperMecanumDrive(hardwareMap,initialPose);
 
+        waitForStart();
         if (isStopRequested()) return;
 
-        telemetry.clear();
-        double power = .35;
-        frontRightMotor.setPower(power);
-        backLeftMotor.setPower(power);
+        // Create and start the telemetry thread
+        Thread telemetryThread = new Thread(() -> {
+            while (!isStopRequested()) {
 
-        frontLeftMotor.setPower(-power);
-        backRightMotor.setPower(-power);
-        telemetry.addLine("hii ran mecanum dt strafeleft ran at speed: " + Config.AUTO_DRIVE_SPEED);
-        telemetry.update();
+                hyperMecanumDrive.updatePoseEstimate();
+                Pose2d botPose = hyperMecanumDrive.pose;
+
+                double heading = Math.toRadians(botPose.heading.toDouble());
+                double x = botPose.position.x;
+                double y = botPose.position.y;
+
+                telemetry.addLine("Estimated pose heading: " + heading);
+                telemetry.addLine("Estimated pose position: " + x + "," + y);
+                telemetry.update();
+            }
+        });
+
+        telemetryThread.start();
+        telemetry.setMsTransmissionInterval(5);
+
+        double power = .35;
+        mecanumDrivetrain.processInput(false,true,
+                true,false,power);
+
         Thread.sleep(5000);
+
+        mecanumDrivetrain.processInput(true,true,
+                true,true,0);
         power = 0;
-        frontRightMotor.setPower(power);
-        backLeftMotor.setPower(power);
-        frontLeftMotor.setPower(-power);
-        backRightMotor.setPower(-power);
+
 
     }
 

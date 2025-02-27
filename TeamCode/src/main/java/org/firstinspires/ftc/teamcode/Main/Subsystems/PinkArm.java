@@ -7,36 +7,47 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
+import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Helpers.TowerPosMovementStatus;
 
 public class PinkArm extends Utils {
+    private boolean runWithEncoders;
     public int pinkArmExtensionTicks = 0;
     public int pinkArmRotationalTicks = 0;
     boolean leftTriggerPressed = false;
     boolean rightTriggerPressed = false;
     public TowerPosMovementStatus towerPosMovementStatus = TowerPosMovementStatus.NOT_MOVING;
     public int towerPosIncreasing = -1;
-    DcMotor towerMotor, slideMotor;
+    public DcMotor towerMotor, slideMotor;
     public CRServo intakeServo;
     double towerMotorPower, slideMotorPower, intakeServoPower;
     public int towerMotorPos;
-    final boolean runToPositionINACTIVE;
 
     /**
      * Initialize PinkArm and pass in PinkArm motors and servo objects
-     * @param towerMotor Tower Motor
-     * @param slideMotor Slide Motor
-     * @param intakeServo CRServo Intake Servo
      */
-    public PinkArm (DcMotor towerMotor, DcMotor slideMotor, CRServo intakeServo) {
-        this.towerMotor = towerMotor;
-        this.slideMotor = slideMotor;
-        this.intakeServo = intakeServo;
-        this.runToPositionINACTIVE = (Config.ARM_MODE != DcMotor.RunMode.RUN_TO_POSITION);
+    public PinkArm (HardwareMap hardwareMap, boolean runWithEncoders) {
+        this.runWithEncoders = runWithEncoders;
+
+        towerMotor = hardwareMap.dcMotor.get(DeviceRegistry.TOWER_MOTOR.str());
+        slideMotor = hardwareMap.dcMotor.get(DeviceRegistry.SLIDE_MOTOR.str());
+        intakeServo = hardwareMap.crservo.get(DeviceRegistry.INTAKE_SERVO.str());
+        intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        if (runWithEncoders) {
+            towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            towerMotor.setTargetPosition(0);
+            towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        else {
+            towerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
 
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -67,7 +78,7 @@ public class PinkArm extends Utils {
      * Main processing loop of PinkArm
      * @param gamepad All input from gamepad 2 as gamepad obj
      */
-    public void processInput(Gamepad gamepad, boolean runWithEncoders) {
+    public void processInput(Gamepad gamepad) {
 
         if (!runWithEncoders) { //Standard Mode
             setIntakeServoPower(gamepad);
@@ -133,7 +144,6 @@ public class PinkArm extends Utils {
         towerMotor.setTargetPosition(towerMotorPos);
         slideMotor.setPower(slideMotorPower);
     }
-
     public void setIntakeServoPower(Gamepad gamepad) {
         if (gamepad.left_bumper) { //Intake
             intakeServoPower = Config.SERVO_INTAKE_POWER;
@@ -148,15 +158,6 @@ public class PinkArm extends Utils {
     }
     public double getTowerMotorHypotheticalPos() {
         return towerMotorPos;
-    }
-    public void setPosZero() {
-        towerMotor.setTargetPosition(0);
-    }
-    /**
-     * Sets both the towerMotor and slideMotor to a unanimous mode
-     */
-    public void setArmMode(DcMotor.RunMode mode) {
-        towerMotor.setMode(mode);
     }
 
 }

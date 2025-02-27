@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.Main.Subsystems;
 
 import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
+import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MecanumDrivetrain {
     static DcMotor frontLeftMotor;
@@ -28,16 +30,13 @@ public class MecanumDrivetrain {
 
     /**
      * Initialize the drivetrain and pass in appropriate motor objects
-     * @param FLM Front Left Motor
-     * @param BLM Back Left Motor
-     * @param FRM Front Right Motor
-     * @param BRM Back Right Motor
      */
-    public MecanumDrivetrain(DcMotor FLM, DcMotor BLM, DcMotor FRM, DcMotor BRM){
-        frontLeftMotor = FLM;
-        backLeftMotor = BLM;
-        frontRightMotor = FRM;
-        backRightMotor = BRM;
+    public MecanumDrivetrain(HardwareMap hardwareMap){
+        frontLeftMotor = hardwareMap.dcMotor.get(DeviceRegistry.FRONT_LEFT_MOTOR.str());
+        backLeftMotor = hardwareMap.dcMotor.get(DeviceRegistry.BACK_LEFT_MOTOR.str());
+        frontRightMotor = hardwareMap.dcMotor.get(DeviceRegistry.FRONT_RIGHT_MOTOR.str());
+        backRightMotor = hardwareMap.dcMotor.get(DeviceRegistry.BACK_RIGHT_MOTOR.str());
+
         //These motors have to be set to reverse by standard so that Mecanum works
         frontLeftMotor.setDirection(Config.FRONT_LEFT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
         frontRightMotor.setDirection(Config.FRONT_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
@@ -85,6 +84,13 @@ public class MecanumDrivetrain {
         backRightMotor.setPower(backRightPower);
     }
 
+    public void processInput(boolean frontLeftWheelForward, boolean frontRightWheelForward,
+                             boolean backLeftWheelForward, boolean backRightWheelForward, double power) {
+        frontLeftMotor.setPower(frontLeftWheelForward ? power : -power);
+        frontRightMotor.setPower(frontRightWheelForward ? power : -power);
+        backLeftMotor.setPower(backLeftWheelForward ? power : -power);
+        backRightMotor.setPower(backRightWheelForward ? power : -power);
+    }
     /**
      * Returns state of field lowPowerMode
      * @return lowPowerMode

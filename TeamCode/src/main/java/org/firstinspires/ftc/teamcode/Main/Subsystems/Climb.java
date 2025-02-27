@@ -19,8 +19,8 @@ public class Climb {
     Debounce circleDebounce = new Debounce();
     Debounce sqaureDebounce = new Debounce();
     public Climb (HardwareMap hardwareMap) {
-        this.climbMotorLeft = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_LEFT.str());
-        this.climbMotorRight = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_RIGHT.str());
+        climbMotorLeft = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_LEFT.str());
+        climbMotorRight = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_RIGHT.str());
 
         climbMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         climbMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

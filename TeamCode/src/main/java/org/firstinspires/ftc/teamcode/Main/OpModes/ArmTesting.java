@@ -32,7 +32,7 @@ public class ArmTesting extends LinearOpMode {
 
         boolean increasePower = false;
 
-        PinkArm pinkArm = new PinkArm(hardwareMap);
+        PinkArm pinkArm = new PinkArm(hardwareMap,true);
 
         towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         towerMotor.setTargetPosition(20);
@@ -61,7 +61,7 @@ public class ArmTesting extends LinearOpMode {
             telemetry.addLine("Overview: Online");
             telemetry.addLine();
 
-            pinkArm.processInput(gamepad2, true); //Contains telemetry data
+            pinkArm.processInput(gamepad2); //Contains telemetry data
             telemetry.addLine("Tower OVERFLOW Encoder status: " +
                     "\nTower Overflow Encoder Velocity: " + towerEncoderVelocity +
                     "\nTower Overflow Encoder Position: " + towerEncoderPosition );

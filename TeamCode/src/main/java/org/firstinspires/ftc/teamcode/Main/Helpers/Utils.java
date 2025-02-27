@@ -20,7 +20,8 @@ public class Utils {
                 ":3c",
                 "No Technical Difficulties detected!",
                 "You got the sun on the moon",
-                "Alea iacta est: The die is cast."
+                "Alea iacta est: The die is cast.",
+                "Am I not merciful?"
         };
         return voiceLines[rand.nextInt(voiceLines.length)]; //Grabs from a random position in the list
     }
