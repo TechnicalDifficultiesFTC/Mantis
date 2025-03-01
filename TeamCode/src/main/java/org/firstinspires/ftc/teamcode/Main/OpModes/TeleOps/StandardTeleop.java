@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Main.OpModes;
+package org.firstinspires.ftc.teamcode.Main.OpModes.TeleOps;
 
 import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;

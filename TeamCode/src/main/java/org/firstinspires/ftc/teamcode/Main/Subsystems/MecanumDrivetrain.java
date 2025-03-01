@@ -84,12 +84,18 @@ public class MecanumDrivetrain {
         backRightMotor.setPower(backRightPower);
     }
 
-    public void processInput(boolean frontLeftWheelForward, boolean frontRightWheelForward,
-                             boolean backLeftWheelForward, boolean backRightWheelForward, double power) {
-        frontLeftMotor.setPower(frontLeftWheelForward ? power : -power);
-        frontRightMotor.setPower(frontRightWheelForward ? power : -power);
-        backLeftMotor.setPower(backLeftWheelForward ? power : -power);
-        backRightMotor.setPower(backRightWheelForward ? power : -power);
+    /**
+     * Overloaded method of processInput which allows you to manually control direction and speed of
+     * the drivetrain without controller input
+     */
+    public void processInput(DcMotorSimple.Direction frontLeftWheelDirection, DcMotorSimple.Direction frontRightWheelDirection,
+                             DcMotorSimple.Direction backLeftWheelDirection , DcMotorSimple.Direction backRightWheelDirection, double power) {
+        frontLeftMotor.setPower(frontLeftWheelDirection == DcMotorSimple.Direction.FORWARD ? power : -power);
+        frontRightMotor.setPower(frontRightWheelDirection == DcMotorSimple.Direction.FORWARD ? power : -power);
+        backLeftMotor.setPower(backLeftWheelDirection == DcMotorSimple.Direction.FORWARD ? power : -power);
+        backRightMotor.setPower(backRightWheelDirection == DcMotorSimple.Direction.FORWARD ? power : -power);
+
+
     }
     /**
      * Returns state of field lowPowerMode

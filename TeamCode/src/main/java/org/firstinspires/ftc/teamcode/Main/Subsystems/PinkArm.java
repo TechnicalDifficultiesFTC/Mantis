@@ -5,8 +5,13 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.ftc.Encoder;
+import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
+import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
+import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,7 +22,8 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Helpers.TowerPosMovementStatus;
 
 public class PinkArm extends Utils {
-    private boolean runWithEncoders;
+    public final Encoder towerEncoder,slideEncoder;
+    private final boolean runWithEncoders;
     public int pinkArmExtensionTicks = 0;
     public int pinkArmRotationalTicks = 0;
     boolean leftTriggerPressed = false;
@@ -54,6 +60,9 @@ public class PinkArm extends Utils {
 
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        towerEncoder = new OverflowEncoder(new RawEncoder((DcMotorEx) towerMotor));
+        slideEncoder = new OverflowEncoder(new RawEncoder((DcMotorEx) slideMotor));
     }
 
     public class Outtake implements Action {
@@ -73,7 +82,20 @@ public class PinkArm extends Utils {
     }
 
 
-
+    public String getEncodersStatusToString() {
+        //Tower Encoder
+        int towerEncoderPosition = towerEncoder.getPositionAndVelocity().position;
+        int towerEncoderVelocity = towerEncoder.getPositionAndVelocity().velocity;
+        //Slide Encoder
+        int slideEncoderPosition = slideEncoder.getPositionAndVelocity().position;
+        int slideEncoderVelocity = slideEncoder.getPositionAndVelocity().velocity;
+        return ("Tower Motor Encoder: " +
+                "\nEncoder position = " + towerEncoderPosition +
+                "\nEncoder velocity = " + towerEncoderVelocity + "\n" +
+                "Slide Motor Encoder: " +
+                "\n Encoder position = " + slideEncoderPosition +
+                "\n Encoder velocity = " + slideEncoderVelocity);
+    }
     /**
      * Main processing loop of PinkArm
      * @param gamepad All input from gamepad 2 as gamepad obj
