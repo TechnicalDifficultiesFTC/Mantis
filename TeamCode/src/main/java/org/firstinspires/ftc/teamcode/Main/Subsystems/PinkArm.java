@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Helpers.TowerPosMovementStatus;
 
+
 public class PinkArm extends Utils {
     public final Encoder towerEncoder,slideEncoder;
     private final boolean runWithEncoders;
@@ -64,23 +65,50 @@ public class PinkArm extends Utils {
         towerEncoder = new OverflowEncoder(new RawEncoder((DcMotorEx) towerMotor));
         slideEncoder = new OverflowEncoder(new RawEncoder((DcMotorEx) slideMotor));
     }
-
+    /*
+    ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
+     */
     public class Outtake implements Action {
         private boolean initialized = false;
 
         @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (!initialized) {
                 intakeServo.setPower(Config.SERVO_OUTTAKE_POWER);
                 initialized = true;
             }
-            packet.put("Initialized?: ",initialized);
-            new SleepAction(500);
+            telemetryPacket.put("Intake servo power: ", intakeServo.getPower());
+            //TODO: Add check to reference color sensor to see if we already have a piece in
+            new SleepAction(.5);
             intakeServo.setPower(0);
+            telemetryPacket.put("Intake servo power: ", intakeServo.getPower());
             return false;
         }
     }
 
+    public class Intake implements Action {
+
+        private boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (!initialized) {
+                intakeServo.setPower(Config.SERVO_INTAKE_POWER);
+                initialized = true;
+            }
+            telemetryPacket.put("Intake servo power: ", intakeServo.getPower());
+            //TODO: Add check to reference color sensor to see if we already have a piece in
+            new SleepAction(.5);
+            intakeServo.setPower(0);
+            telemetryPacket.put("Intake servo power: ", intakeServo.getPower());
+            return false;
+        }
+    }
+
+
+
+    /*
+    ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
+     */
 
     public String getEncodersStatusToString() {
         //Tower Encoder

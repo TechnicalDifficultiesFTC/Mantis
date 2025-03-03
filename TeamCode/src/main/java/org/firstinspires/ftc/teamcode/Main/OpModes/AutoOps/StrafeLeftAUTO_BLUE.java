@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 
-@Autonomous(name="MANTIS AUTO: One Piece BLUE", group="Linear OpMode")
+@Autonomous(name="MANTIS AUTO: Strafe Left BLUE", group="Linear OpMode")
 public class StrafeLeftAUTO_BLUE extends LinearOpMode {
     @Override
     public void runOpMode() {
@@ -28,9 +28,11 @@ public class StrafeLeftAUTO_BLUE extends LinearOpMode {
         // Create and start the telemetry thread
         Thread telemetryThread = new Thread(() -> {
             while (!isStopRequested()) {
+                hyperMecanumDrive.updatePoseEstimate();
                 double heading = hyperMecanumDrive.pose.heading.toDouble();
                 double x = hyperMecanumDrive.pose.position.x;
                 double y = hyperMecanumDrive.pose.position.y;
+                telemetry.addLine("Receiving HyperMecanum data");
                 telemetry.addLine("Estimated pose heading: " + heading);
                 telemetry.addLine("Estimated pose position: " + x + "," + y);
                 telemetry.update();

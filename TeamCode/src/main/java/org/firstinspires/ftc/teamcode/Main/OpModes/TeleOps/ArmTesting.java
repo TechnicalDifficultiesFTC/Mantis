@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 @TeleOp(name="ARM_DEBUGGER", group="Linear OpMode")
 public class ArmTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
+        //TODO: Make sure that in arm testing we are reinitializing encoders
         //Pink Arm init
 
 //        Debounce leftButtonDebounce = new Debounce();
