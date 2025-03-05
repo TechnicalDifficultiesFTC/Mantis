@@ -26,13 +26,11 @@ public class ArmTesting extends LinearOpMode {
 //        Debounce leftButtonDebounce = new Debounce();
 //        Debounce rightButtonDebounce = new Debounce();
 
-        boolean increasePower = false;
-
-        PinkArm pinkArm = new PinkArm(hardwareMap,true);
+        PinkArm pinkArm = new PinkArm(hardwareMap,false);
 
         telemetry.addLine("Systems Registered");
         telemetry.update();
-
+        telemetry.setMsTransmissionInterval(5);
         waitForStart();
         telemetry.clear();
 
@@ -50,7 +48,6 @@ public class ArmTesting extends LinearOpMode {
 
             //Display encoders position and velocity of pinkarm
             telemetry.addLine(pinkArm.getEncodersStatusToString());
-
             telemetry.addLine();
 
             if (towerPosMovementStatus == TowerPosMovementStatus.MOVING_UP) {

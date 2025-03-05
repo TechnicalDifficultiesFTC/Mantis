@@ -95,7 +95,6 @@ public class MecanumDrivetrain {
         backLeftMotor.setPower(backLeftWheelDirection == DcMotorSimple.Direction.FORWARD ? power : -power);
         backRightMotor.setPower(backRightWheelDirection == DcMotorSimple.Direction.FORWARD ? power : -power);
 
-
     }
     /**
      * Returns state of field lowPowerMode

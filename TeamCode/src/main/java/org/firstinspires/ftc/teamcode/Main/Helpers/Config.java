@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Main.Helpers;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
@@ -7,9 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  */
 @com.acmerobotics.dashboard.config.Config
 public class Config {
-    //Auto
-    public static double AUTO_DRIVE_SPEED = .5;
-
     //Telemetry
     public static boolean SHOW_DT_STATUS = false; //Where DT is "Drivetrain"
     public static boolean SHOW_ARM_STATUS = false;
@@ -43,9 +41,6 @@ public class Config {
     //End effector servo
     public static double SERVO_OUTTAKE_POWER = -.7;
     public static double SERVO_INTAKE_POWER = 1;
-
-    //TODO: Update & test
-    public static double pinkArmExtensionCutoff = 0; // MEASURED IN TICKS, measure to 45 degrees
     /*
     RunModes:
     RUN_TO_POSITION -> Uses encoder feedback (FFL) to push to a position set by .setTargetPosition(int position) [0,360]?, then holds the last given position
@@ -53,18 +48,36 @@ public class Config {
     RUN_WITHOUT_ENCODER -> SHOULD ONLY BE USED ON MOTORS W/O ENCODERS, uses no feedback to attempt to gain a velocity
      */
 
-    public static DcMotor.RunMode ARM_MODE = DcMotor.RunMode.RUN_USING_ENCODER;
+    /*
+    ---------------------------------------------------------------- LIMITS ZONE ----------------------------------------------------------------
+     */
+
+    //Extension limit
 
     public static int pinkArmExtensionLimitTicks = -2700;
 
+    public static int pinkArmDegrees_ApplyExtensionLimit_InTicks = -1070; //Measured to about 18.7 degrees
+
+    //BELOW IS FOR AUTO'S
+    //Rotational -3330, -3250
+
+    public static int pinkArmDegreesRotation_HighBasket_InTicks = -3300; //Ticks to move to when initialized at base to reach high basket
+    public static int pinkArmDegreesRotation_ToTouchGround = 75; //Reverse this amount to go back up to a good amount to ascend? //TODO: Test this
+
+    //Extensional
+    public static int pinkArmExtensionAmountSlides_ToReachPieceInAuto_InTicks = -1400; //Ticks to extend the slides to in order to reach sample in auto
+    public static int pinkArmExtensionAmountSlides_ToReachHighBasket_InTicks = -3250;
+    public static int pinkArmExtensionAmountSlides_TillSafeToDescend_InTicks = 0; //TODO: FILL IN
+    public static int pinkArmEscapeAmount_InTicks = -420;
+    public static int climbArmsExtensionAmount_InTicks = 0; //TODO: FILL IN
+
+    //The initial pose listed below looks like this: https://drive.google.com/file/d/1Utc5_G4_l_5cw0eufCwzscnooBlsDLXZ/view?usp=sharing
+    public static Pose2d initialBluePose = new Pose2d(20,62,Math.toRadians(-90));
+
+    /*
+    ---------------------------------------------------------------- LIMITS ZONE ----------------------------------------------------------------
+     */
     //Tag funzies :)
-    public static String dasshTag = "                                                 88            \n" +
-            "                                           ,d    \"\"            \n" +
-            "                                           88                  \n" +
-            "88,dPYba,,adPYba,  ,adPPYYba, 8b,dPPYba, MM88MMM 88 ,adPPYba,  \n" +
-            "88P'   \"88\"    \"8a \"\"     `Y8 88P'   `\"8a  88    88 I8[    \"\"  \n" +
-            "88      88      88 ,adPPPPP88 88       88  88    88  `\"Y8ba,   \n" +
-            "88      88      88 88,    ,88 88       88  88,   88 aa    ]8I  \n" +
-            "88      88      88 `\"8bbdP\"Y8 88       88  \"Y888 88 `\"YbbdP\"'  \n" +
-            "                                                               ";
+    public static String dasshTag = "Dassh01";
+
 }

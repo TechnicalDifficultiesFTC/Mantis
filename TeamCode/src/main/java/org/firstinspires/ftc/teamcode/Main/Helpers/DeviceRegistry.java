@@ -19,8 +19,8 @@ public enum DeviceRegistry {
     Changing the direction of an Encoder has no effect on the direction of its associated DcMotorEx
     (and vice versa).
      */
-    LEFT_THROUGHBORE_ENC(FRONT_RIGHT_MOTOR.str()),
-    RIGHT_THROUGHBORE_ENC(BACK_LEFT_MOTOR.str()),
+    LEFT_THROUGHBORE_ENC(BACK_LEFT_MOTOR.str()),
+    RIGHT_THROUGHBORE_ENC(FRONT_RIGHT_MOTOR.str()),
     YAW_THROUGHBORE_ENC(BACK_RIGHT_MOTOR.str()),
 
     //IMU

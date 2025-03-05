@@ -7,8 +7,17 @@ import java.util.Random;
 public class Utils {
 
     /**
-     * Generates a random "voice line" to display on the telemetry feed, just for fun, servos no real purpose
-     * @return [String] Semi random cool sounding piece of text
+     * Rounds the input to the amount of decimal places provided as the (int) second parameter
+     * @param input Double to be rounded
+     * @param decimalPlacesToRoundTo Decimal places to round to (EX: 4.2456 rounded to 2 would be 4.24)
+     * @return Formatted string of double rounded
+     */
+    public static String roundAsString(double input, int decimalPlacesToRoundTo) {
+        return String.format("%."+decimalPlacesToRoundTo+"f", input);
+    }
+    /**
+     * Generates a random "MOTM" to display on the telemetry feed, just for fun, servos no real purpose
+     * @return [String]
      */
     public static String generateMOTMLine() {
         //Just for fun! Display a "voice line" on initialization
@@ -18,12 +27,11 @@ public class Utils {
                 "“If brute force isn’t working, you aren’t using enough of it”",
                 "Welcome back, sharpshooter pilot",
                 "“The sword is yours”",
-                "Ad Astra Per Aspera",
-                ":3c",
                 "No Technical Difficulties detected!",
-                "You got the sun on the moon",
+                "You got the sun on the moon.",
                 "Alea iacta est: The die is cast.",
-                "Am I not merciful?"
+                "Am I not merciful?",
+                "Maybe I was wrong to consider us allies."
         };
         return voiceLines[rand.nextInt(voiceLines.length)]; //Grabs from a random position in the list
     }

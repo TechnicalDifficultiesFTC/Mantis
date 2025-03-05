@@ -53,15 +53,19 @@ public class PinkArm extends Utils {
             towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         else {
+            towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             towerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
+        //Set slidemotor configs
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        //Set zeropowermode of both motors to brake
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //Reconsidered. I love overflow encoders!
         towerEncoder = new OverflowEncoder(new RawEncoder((DcMotorEx) towerMotor));
         slideEncoder = new OverflowEncoder(new RawEncoder((DcMotorEx) slideMotor));
     }
@@ -104,7 +108,14 @@ public class PinkArm extends Utils {
         }
     }
 
+    public class RaiseArmToHighBasket implements Action {
 
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+
+            return false;
+        }
+    }
 
     /*
     ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
@@ -118,11 +129,12 @@ public class PinkArm extends Utils {
         int slideEncoderPosition = slideEncoder.getPositionAndVelocity().position;
         int slideEncoderVelocity = slideEncoder.getPositionAndVelocity().velocity;
         return ("Tower Motor Encoder: " +
-                "\nEncoder position = " + towerEncoderPosition +
-                "\nEncoder velocity = " + towerEncoderVelocity + "\n" +
+                "\nEncoder position (ticks) = " + towerEncoderPosition +
+                "\nEncoder velocity (units) = " + towerEncoderVelocity +
+
                 "Slide Motor Encoder: " +
-                "\n Encoder position = " + slideEncoderPosition +
-                "\n Encoder velocity = " + slideEncoderVelocity);
+                "\n Encoder position (ticks) = " + slideEncoderPosition +
+                "\n Encoder velocity (units) = " + slideEncoderVelocity);
     }
     /**
      * Main processing loop of PinkArm
@@ -142,8 +154,6 @@ public class PinkArm extends Utils {
 
     }
 
-
-
     public boolean pinkArmHasExceededBounds() {
         return (pinkArmExtensionTicks < -2770);
     }
@@ -154,7 +164,7 @@ public class PinkArm extends Utils {
      * @return True if the pink arm extension limit should be applied, False if the pink arm extension limit shouldn't be
      */
     public boolean pinkArmExtensionLimitShouldBeApplied() {
-        return !(pinkArmRotationalTicks > Config.pinkArmExtensionCutoff);
+        return !(pinkArmRotationalTicks > Config.pinkArmExtensionLimitTicks);
     }
     public void setArmPowers(@NonNull Gamepad gamepad) {
         pinkArmExtensionTicks = slideMotor.getCurrentPosition();

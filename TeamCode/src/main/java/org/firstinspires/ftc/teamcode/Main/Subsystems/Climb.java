@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode.Main.Subsystems;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -12,21 +16,55 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 
 public class Climb {
+
+    /*
+    ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
+     */
+//    public class raiseClimbToFirstRung implements Action {
+//
+//        @Override
+//        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+//
+//        }
+//    }
+    /*
+    ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
+     */
     DcMotor climbMotorLeft;
     DcMotor climbMotorRight;
     boolean climbLowPowerMode = false;
     boolean climbLockDown = false;
     Debounce circleDebounce = new Debounce();
     Debounce sqaureDebounce = new Debounce();
-    public Climb (HardwareMap hardwareMap) {
-        climbMotorLeft = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_LEFT.str());
-        climbMotorRight = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_RIGHT.str());
 
-        climbMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        climbMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    /**
+     * Climb singleton constructor
+     * @param hardwareMap Hardware map
+     * @param runToPosition Run to position should only be true if this constructor is being invoked in auto
+     */
+    public Climb (HardwareMap hardwareMap,boolean runToPosition) {
 
-        climbMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        climbMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        if (runToPosition) {
+            //Zero encoders
+            climbMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            climbMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            //Prime to launch
+            climbMotorLeft.setTargetPosition(Config.climbArmsExtensionAmount_InTicks);
+            climbMotorRight.setTargetPosition(Config.climbArmsExtensionAmount_InTicks);
+            //Release!
+            climbMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            climbMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        else {
+            climbMotorLeft = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_LEFT.str());
+            climbMotorRight = hardwareMap.dcMotor.get(DeviceRegistry.CLIMB_MOTOR_RIGHT.str());
+
+            climbMotorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            climbMotorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            climbMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+            climbMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
     }
 
     private void setArmsPower(float power) {

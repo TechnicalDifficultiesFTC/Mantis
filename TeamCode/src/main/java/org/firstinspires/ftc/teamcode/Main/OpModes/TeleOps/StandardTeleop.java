@@ -31,7 +31,7 @@ public class StandardTeleop extends LinearOpMode {
         //Create subsystem singletons
         MecanumDrivetrain drivetrain = new MecanumDrivetrain(hardwareMap);
         PinkArm pinkArm = new PinkArm(hardwareMap,false);
-        Climb climb = new Climb(hardwareMap);
+        Climb climb = new Climb(hardwareMap,false);
 
         //Drivetrain initial setup
         drivetrain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -49,7 +49,7 @@ public class StandardTeleop extends LinearOpMode {
         //Nothing past this point will run until the start button is pressed
         waitForStart();
 
-        telemetry.setMsTransmissionInterval(15);
+        telemetry.setMsTransmissionInterval(10);
 
         if (isStopRequested()) return;
 

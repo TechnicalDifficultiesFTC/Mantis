@@ -7,9 +7,9 @@ import org.rowlandhall.meepmeep.MeepMeep;
 import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
 import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class Hypothetical_OnePieceAUTO_BLUE {
+public class Hypothetical_ThreePieceAUTO_BLUE {
+    static final double actionsDelay = 5;
     public static void executeAuto() {
-        double actionsDelay = 2.5;
         MeepMeep meepMeepApplicationEngine = new MeepMeep(800);
         meepMeepApplicationEngine.setShowFPS(true);
         Pose2d initialPose = new Pose2d(20, 62, Math.toRadians(-90));
@@ -18,33 +18,44 @@ public class Hypothetical_OnePieceAUTO_BLUE {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(
                         drive -> drive.trajectorySequenceBuilder(initialPose)
-                                //.waitSeconds(5)
-                                .setTangent(Math.toRadians(0))
+                                //.setTangent(Math.toRadians(0))
                                 .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(90)) //To basket
+                                .waitSeconds(actionsDelay) //Dropping preloaded sample
+
+                                //Alignment to piece 1
+                                .back(5)
+                                .turn(Math.toRadians(-135))
+                                .lineTo(new Vector2d(48,45))
+                                .waitSeconds(actionsDelay) //Pick up piece infront of us
+
+                                //Return to basket
+                                .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(90))
+
+                                //Alignment to piece 2
+                                .back(5)
+                                .turn(Math.toRadians(-135))
+                                .lineTo(new Vector2d(58,45))
                                 .waitSeconds(actionsDelay)
-                                .turn(Math.toRadians(225))
-                                .strafeTo(new Vector2d(0,35))
+
+                                //Return to basket
+                                .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(90))
                                 .waitSeconds(actionsDelay)
+                                //Build
                                 .build()
                 );
 
         Thread telemetryThread = new Thread(() -> {
             while (true) {
                 Pose2d botPose = myBot.getDrive().getPoseEstimate();
-                double heading = botPose.getHeading();
-                //double heading = Math.toDegrees(botPose.getHeading());
+                double heading = Math.toDegrees(botPose.getHeading());
                 double x = botPose.getX();
                 double y = botPose.getY();
-                System.out.println("\nEstimated pose heading (radians): " + heading);
+                System.out.println("\nEstimated pose heading: " + heading);
                 System.out.println("Estimated pose position: " + x + "," + y);
 
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-
+                } catch (InterruptedException ignored) {}
             }
         });
 
