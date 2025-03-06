@@ -6,6 +6,7 @@
     import com.acmerobotics.roadrunner.Pose2d;
     import com.acmerobotics.roadrunner.SequentialAction;
     import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+    import com.acmerobotics.roadrunner.Vector2d;
     import com.acmerobotics.roadrunner.ftc.Actions;
     import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
     import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -45,14 +46,16 @@
             });
 
             telemetryThread.start();
-
+            double actionsDelay = 2.5;
             //PinkArm pinkArm = new PinkArm(hardwareMap,true);
             TrajectoryActionBuilder drivetrainTrajectory = hyperMecanumDrive.actionBuilder(initialPose)
+                    //.waitSeconds(5)
                     .setTangent(Math.toRadians(0))
-                    .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(90))
-                    .waitSeconds(5)
-                    .splineToSplineHeading(new Pose2d(25,0,Math.toRadians(180)), Math.toRadians(90))
-                    .waitSeconds(2);
+                    .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(90)) //To basket
+                    .waitSeconds(actionsDelay)
+                    .turn(Math.toRadians(225))
+                    .strafeTo(new Vector2d(0,31))
+                    .waitSeconds(actionsDelay);
             Action dtPath = drivetrainTrajectory.build();
 
             Actions.runBlocking(
@@ -60,6 +63,7 @@
                         dtPath
                     )
             );
+
 
     //        // Stop the telemetry thread
     //        try {

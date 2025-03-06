@@ -1,20 +1,10 @@
 package org.firstinspires.ftc.teamcode.Main.OpModes.TeleOps;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
-import com.acmerobotics.roadrunner.ftc.Encoder;
-import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
-import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
-import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.TowerPosMovementStatus;
+import org.firstinspires.ftc.teamcode.Main.Subsystems.Climb;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 
 @TeleOp(name="ARM_DEBUGGER", group="Linear OpMode")
@@ -27,6 +17,7 @@ public class ArmTesting extends LinearOpMode {
 //        Debounce rightButtonDebounce = new Debounce();
 
         PinkArm pinkArm = new PinkArm(hardwareMap,false);
+        Climb climb = new Climb(hardwareMap, false);
 
         telemetry.addLine("Systems Registered");
         telemetry.update();
@@ -47,8 +38,9 @@ public class ArmTesting extends LinearOpMode {
             pinkArm.processInput(gamepad2); //Contains telemetry data
 
             //Display encoders position and velocity of pinkarm
-            telemetry.addLine(pinkArm.getEncodersStatusToString());
+            telemetry.addLine(pinkArm.toString());
             telemetry.addLine();
+            telemetry.addLine(climb.toString());
 
             if (towerPosMovementStatus == TowerPosMovementStatus.MOVING_UP) {
                 telemetry.addLine("Tower Motor Pos Incremented " +

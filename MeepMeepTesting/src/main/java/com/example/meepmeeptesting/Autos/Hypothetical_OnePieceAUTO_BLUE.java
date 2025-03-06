@@ -23,7 +23,7 @@ public class Hypothetical_OnePieceAUTO_BLUE {
                                 .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(90)) //To basket
                                 .waitSeconds(actionsDelay)
                                 .turn(Math.toRadians(225))
-                                .strafeTo(new Vector2d(0,35))
+                                .strafeTo(new Vector2d(0,31))
                                 .waitSeconds(actionsDelay)
                                 .build()
                 );

@@ -7,7 +7,6 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
-import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,6 +20,8 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Helpers.TowerPosMovementStatus;
 
+import java.util.Objects;
+
 
 public class PinkArm extends Utils {
     public final Encoder towerEncoder,slideEncoder;
@@ -30,7 +31,6 @@ public class PinkArm extends Utils {
     boolean leftTriggerPressed = false;
     boolean rightTriggerPressed = false;
     public TowerPosMovementStatus towerPosMovementStatus = TowerPosMovementStatus.NOT_MOVING;
-    public int towerPosIncreasing = -1;
     public DcMotor towerMotor, slideMotor;
     public CRServo intakeServo;
     double towerMotorPower, slideMotorPower, intakeServoPower;
@@ -72,7 +72,7 @@ public class PinkArm extends Utils {
     /*
     ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
      */
-    public class Outtake implements Action {
+    private class Outtake implements Action {
         private boolean initialized = false;
 
         @Override
@@ -81,17 +81,13 @@ public class PinkArm extends Utils {
                 intakeServo.setPower(Config.SERVO_OUTTAKE_POWER);
                 initialized = true;
             }
-            telemetryPacket.put("Intake servo power: ", intakeServo.getPower());
-            //TODO: Add check to reference color sensor to see if we already have a piece in
             new SleepAction(.5);
             intakeServo.setPower(0);
-            telemetryPacket.put("Intake servo power: ", intakeServo.getPower());
             return false;
         }
     }
 
-    public class Intake implements Action {
-
+    private class Intake implements Action {
         private boolean initialized = false;
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -99,29 +95,82 @@ public class PinkArm extends Utils {
                 intakeServo.setPower(Config.SERVO_INTAKE_POWER);
                 initialized = true;
             }
-            telemetryPacket.put("Intake servo power: ", intakeServo.getPower());
             //TODO: Add check to reference color sensor to see if we already have a piece in
             new SleepAction(.5);
             intakeServo.setPower(0);
-            telemetryPacket.put("Intake servo power: ", intakeServo.getPower());
             return false;
         }
     }
 
-    public class RaiseArmToHighBasket implements Action {
-
+    /**
+     * ARM MUST BE ESCAPED BEFORE THIS IS RUN!!
+     * Method assumes towerMotor is zeroed
+     */
+    private class RaiseArmToHighBasket implements Action {
+        boolean initialized = false;
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            DcMotor.RunMode tempMode = null;
+            if (!initialized) {
+                if (towerMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) { //If tower in wrong mode
+                    tempMode = towerMotor.getMode(); //Store for later reset
+                    towerMotor.setTargetPosition(Config.pinkArmDegreesRotation_HighBasket_InTicks); //Sets tower motor to reach to high basket
+                    towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //Set to right more (will be reset later)
+                }
+            }
 
-            return false;
+            if (towerMotor.getCurrentPosition() == Config.pinkArmDegreesRotation_HighBasket_InTicks) {
+                if (Objects.nonNull(tempMode)) {
+                    towerMotor.setMode(tempMode);
+                }
+                return false;
+            }
+            else {
+                return true;
+            }
         }
+    }
+
+    private class BringArmToEscapeAngle implements Action {
+        boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (!initialized) {
+                towerMotor.setTargetPosition(Config.pinkArmEscapeAmount_InTicks);
+                initialized = true;
+            }
+            //Rerun until the amount of ticks is reached
+            if (towerMotor.getCurrentPosition() == Config.pinkArmEscapeAmount_InTicks) {
+                return false;
+            }
+            return true;
+        }
+
     }
 
     /*
-    ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
+    ------------------------------------------------------------------------------------ ACTIONS METHODS ZONE ------------------------------------------------------------------------------------
      */
 
-    public String getEncodersStatusToString() {
+    public Action intake() {
+        return new Intake();
+    }
+
+    public Action outtake() {
+        return new Outtake();
+    }
+    public Action raiseArmToHighBasket() {
+        return new RaiseArmToHighBasket();
+    }
+
+    public Action bringArmToEscapeAngle() {
+        return new BringArmToEscapeAngle();
+    }
+    /*
+    ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
+     */
+    @Override
+    public String toString() {
         //Tower Encoder
         int towerEncoderPosition = towerEncoder.getPositionAndVelocity().position;
         int towerEncoderVelocity = towerEncoder.getPositionAndVelocity().velocity;

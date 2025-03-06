@@ -62,32 +62,36 @@ public final class HyperMecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
-        public double inPerTick = (117.25 / 210549.0);
+        //public double inPerTick = (117.25 / 210549.0);
+        public double inPerTick = (141.0 / 260086.0);
         public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 3.2060679818188897;
-
+        //public double trackWidthTicks = 3.2060679818188897;
+        public double trackWidthTicks = 29392.650243522414;
         // feedforward parameters (in tick units)
-        public double kS = 0.9504307141805839;
-        public double kV = 0.00009783786945115015;
+        public double kS = 0.9628526408514921;
+        public double kV = 0.00009230809211040929;
+        //TESTED VALUE AS OF 3/5/25: 0.00001
+        //TODO: Consider restarting at 0.0000001
+        //TODO: CURRENT RR TUNING STEP; Manual feedfoward tuner
         public double kA = 0;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 60;
+        public double maxWheelVel = 50;
         public double minProfileAccel = -30;
-        public double maxProfileAccel = 60;
+        public double maxProfileAccel = 50;
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI; // shared with path
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 5.0;
-        public double lateralGain = 10.0;
-        public double headingGain = 25.0; // shared with turn
+        public double axialGain = 0.0;
+        public double lateralGain = 0.0;
+        public double headingGain = 0.0; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
-        public double headingVelGain = 25.0; // shared with turn
+        public double headingVelGain = 0.0; // shared with turn
     }
 
     public static Params PARAMS = new Params();

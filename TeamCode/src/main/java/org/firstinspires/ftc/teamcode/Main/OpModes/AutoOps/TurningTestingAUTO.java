@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
+import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 
@@ -21,7 +22,7 @@ public class TurningTestingAUTO extends LinearOpMode {
     public void runOpMode() {
         telemetry.setMsTransmissionInterval(10);
         telemetry.addLine("Initialized!");
-
+        PinkArm pinkArm = new PinkArm(hardwareMap,true);
         waitForStart();
 
         if (isStopRequested()) return;
@@ -29,6 +30,7 @@ public class TurningTestingAUTO extends LinearOpMode {
         //The initial pose listed below looks like this: https://drive.google.com/file/d/1Utc5_G4_l_5cw0eufCwzscnooBlsDLXZ/view?usp=sharing
         Pose2d initialPose = Config.initialBluePose;
         HyperMecanumDrive hyperMecanumDrive = new HyperMecanumDrive(hardwareMap,initialPose);
+
         double turnAmountRadians = Math.toRadians(180);
         //Create and start the telemetry thread
         @SuppressLint("DefaultLocale") Thread telemetryThread = new Thread(() -> {
@@ -36,6 +38,7 @@ public class TurningTestingAUTO extends LinearOpMode {
                 double headingRadians = hyperMecanumDrive.pose.heading.toDouble();
                 double x = hyperMecanumDrive.pose.position.x;
                 double y = hyperMecanumDrive.pose.position.y;
+
                 telemetry.addLine("Telemetry is running...");
                 telemetry.addLine("Attempting to turn to (radians): " + turnAmountRadians);
                 telemetry.addLine("Attempting to turn to (degrees): " + Math.toDegrees(turnAmountRadians));
@@ -53,13 +56,14 @@ public class TurningTestingAUTO extends LinearOpMode {
 
         //PinkArm pinkArm = new PinkArm(hardwareMap,true);
         TrajectoryActionBuilder drivetrainTrajectory = hyperMecanumDrive.actionBuilder(initialPose)
-                .turn(turnAmountRadians,new TurnConstraints(25.0,25.0,25.0))
+                .turn(turnAmountRadians)
                 .waitSeconds(10);
         Action dtPath = drivetrainTrajectory.build();
 
         Actions.runBlocking(
                 new SequentialAction(
-                        dtPath
+                        dtPath,
+                        pinkArm.bringArmToEscapeAngle()
                 )
         );
 

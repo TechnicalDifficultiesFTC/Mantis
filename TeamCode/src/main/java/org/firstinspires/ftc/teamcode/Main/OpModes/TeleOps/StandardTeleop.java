@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Main.OpModes.TeleOps;
 
+import android.bluetooth.BluetoothClass;
+
 import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
@@ -16,12 +18,16 @@ import org.firstinspires.ftc.teamcode.Main.Subsystems.Climb;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
+import org.firstinspires.ftc.teamcode.RoadRunner.RR1.ThreeDeadWheelLocalizer;
 
 @TeleOp(name="MANTIS V:1.5", group="Linear OpMode")
 
 public class StandardTeleop extends LinearOpMode {
-//TODO: Test FTC dashboard
-//TODO: Tune RoadRunner
+    OverflowEncoder perp;
+    OverflowEncoder par0;
+    OverflowEncoder par1;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -39,17 +45,18 @@ public class StandardTeleop extends LinearOpMode {
         telemetry.addLine("Systems Registered!");
         telemetry.update();
 
-
-        //FOR TESTING!!
-        final Encoder par0, par1, perp;
-        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, DeviceRegistry.LEFT_THROUGHBORE_ENC.str())));
-        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, DeviceRegistry.RIGHT_THROUGHBORE_ENC.str())));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, DeviceRegistry.YAW_THROUGHBORE_ENC.str())));
-
         //Nothing past this point will run until the start button is pressed
         waitForStart();
 
         telemetry.setMsTransmissionInterval(10);
+        par0 = new OverflowEncoder(new RawEncoder(
+                (DcMotorEx) hardwareMap.dcMotor.get(DeviceRegistry.LEFT_THROUGHBORE_ENC.str())));
+        par1 = new OverflowEncoder(new RawEncoder(
+                (DcMotorEx) hardwareMap.dcMotor.get(DeviceRegistry.RIGHT_THROUGHBORE_ENC.str())));
+        perp = new OverflowEncoder(new RawEncoder(
+                (DcMotorEx) hardwareMap.dcMotor.get(DeviceRegistry.YAW_THROUGHBORE_ENC.str())));
+        par0.setDirection(DcMotorSimple.Direction.FORWARD);
+        par1.setDirection(DcMotorSimple.Direction.FORWARD);
 
         if (isStopRequested()) return;
 
@@ -92,11 +99,16 @@ public class StandardTeleop extends LinearOpMode {
             }
             if (Config.SHOW_ENCODER_DATA) {
                 telemetry.addLine();
-                telemetry.addLine(
-                        "Encoders: +\n Perp: " + perp.getPositionAndVelocity().velocity +
-                        "\nPar0: " + par0.getPositionAndVelocity().velocity +
-                        "\nPar1: " + par1.getPositionAndVelocity().velocity
-                );
+                try {
+                    telemetry.addLine(
+                            "Encoders: +\n Perp: " + perp.getPositionAndVelocity().position +
+                                    "\nPar0: " + par0.getPositionAndVelocity().position +
+                                    "\nPar1: " + par1.getPositionAndVelocity().position
+                    );
+                }
+                catch (NullPointerException e) {
+                    telemetry.addLine("Encoders Null! Retrying!");
+                }
                 telemetry.addLine();
             }
             if (Config.SHOW_CTRL1) {

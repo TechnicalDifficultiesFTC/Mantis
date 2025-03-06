@@ -20,13 +20,22 @@ public class Climb {
     /*
     ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
      */
-//    public class raiseClimbToFirstRung implements Action {
-//
-//        @Override
-//        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-//
-//        }
-//    }
+    public class raiseClimbToFirstRung implements Action {
+        boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            boolean climbArmsAtPosition = (climbMotorRight.getCurrentPosition() == Config.climbArmsExtensionAmount_InTicks);
+            if (!initialized) {
+                //Initially set climb arms to extend to the first rung
+                climbMotorRight.setTargetPosition(Config.climbArmsExtensionAmount_InTicks);
+                initialized = true;
+            }
+            //If the climb motor is not at the right height, will rerun (TRUE CASE)
+            //If the climb motor is at the right height, will not rerun and will maintain that height (FALSE CASE)
+            return !climbArmsAtPosition;
+        }
+    }
     /*
     ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
      */
@@ -102,5 +111,11 @@ public class Climb {
         //If climb is locked to down send climb motors down
         //If climb is unlocked then power scales off of the right stick y
         setArmsPower(climbLockDown ? Config.CLIMB_LOCK_DOWN_POWER : gamepad.right_stick_y);
+    }
+
+    public String toString() {
+        return ("Climb Encoders: \n" +
+                "Climb Motor Left Position: " + climbMotorLeft.getCurrentPosition() + "\n" +
+                "Climb Motor Right Position: " + climbMotorRight.getCurrentPosition());
     }
 }

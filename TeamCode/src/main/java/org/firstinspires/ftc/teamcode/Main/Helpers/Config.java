@@ -72,7 +72,7 @@ public class Config {
     public static int climbArmsExtensionAmount_InTicks = 0; //TODO: FILL IN
 
     //The initial pose listed below looks like this: https://drive.google.com/file/d/1Utc5_G4_l_5cw0eufCwzscnooBlsDLXZ/view?usp=sharing
-    public static Pose2d initialBluePose = new Pose2d(20,62,Math.toRadians(-90));
+    public static Pose2d initialBluePose = new Pose2d(20,62,Math.toRadians(270));
 
     /*
     ---------------------------------------------------------------- LIMITS ZONE ----------------------------------------------------------------
