@@ -65,6 +65,9 @@ public class PinkArm extends Utils {
             towerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
+        //Set intake configs
+        intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
+
         //Set slidemotor configs
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -258,12 +261,12 @@ public class PinkArm extends Utils {
      */
     public boolean pinkArmExtensionLimitShouldBeApplied() {
         boolean pinkArmBehindLimit = isPinkArmExtensionLimitInEffect();
-        boolean pinkArmHasExceededExtensionLimit = (pinkArmExtensionTicks < Config.pinkArmExtensionLimitTicks);
+        boolean pinkArmHasExceededExtensionLimit = (pinkArmExtensionTicks > Config.pinkArmExtensionLimitTicks);
         return (pinkArmBehindLimit && pinkArmHasExceededExtensionLimit);
     }
 
     public boolean isPinkArmExtensionLimitInEffect() {
-        return (pinkArmRotationalTicks > Config.pinkArmDegrees_ApplyExtensionLimit_InTicks);
+        return (pinkArmRotationalTicks < Config.pinkArmDegrees_ApplyExtensionLimit_InTicks);
     }
 
     public void setArmPowers(@NonNull Gamepad gamepad) {
@@ -277,10 +280,10 @@ public class PinkArm extends Utils {
         }
         else {
             slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            slideMotorPower = gamepad.left_stick_y;
+            slideMotorPower = -gamepad.left_stick_y;
             slideMotor.setPower(slideMotorPower);
 
-            towerMotorPower = (gamepad.left_trigger - gamepad.right_trigger);
+            towerMotorPower = (gamepad.right_trigger - gamepad.left_trigger);
             towerMotor.setPower(towerMotorPower);
         }
     }

@@ -15,11 +15,11 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 
-@Autonomous(name="MANTIS AUTO: Three Piece BLUE", group="Linear OpMode")
+@Autonomous(name="MANTIS AUTO: Three Piece BLUE", group="Autonomous")
 public class ThreePieceAUTO_BLUE extends LinearOpMode {
     @Override
     public void runOpMode() {
-        //TODO: Rewrite return splines
+        //TODO: Test new splines
         //TODO: Calibrate mass PID's
 
         double actionsDelay = 2.5;
@@ -63,7 +63,7 @@ public class ThreePieceAUTO_BLUE extends LinearOpMode {
                 .waitSeconds(actionsDelay) //Pick up piece infront of us
 
                 //Return to basket
-                .splineTo(new Vector2d(56,56),Math.toRadians(45))
+                .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(45))
                 .waitSeconds(actionsDelay)
 
                 //Alignment to piece 2
@@ -73,7 +73,7 @@ public class ThreePieceAUTO_BLUE extends LinearOpMode {
                 .waitSeconds(actionsDelay)
 
                 //Return to basket
-                .splineTo(new Vector2d(56,56),Math.toRadians(45))
+                .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(45))
                 .waitSeconds(actionsDelay);
 
         Action dtPath = drivetrainTrajectory.build();

@@ -13,9 +13,9 @@ public class Config {
     MISC:
      */
 
-    public final static double maximumDeviationFromPathInches = 1;
-    public final static double maximumVelocityAllowedAtActionStop = .5;
-    public final static double timeoutDuration = 1;
+    public static double maximumDeviationFromPathInches = .5;
+    public static double maximumVelocityAllowedAtActionStop = 1;
+    public static double timeoutDuration = 2;
     /*
     ---------------------------------------------------------------- Subsystems Testing Triggers ----------------------------------------------------------------
      */

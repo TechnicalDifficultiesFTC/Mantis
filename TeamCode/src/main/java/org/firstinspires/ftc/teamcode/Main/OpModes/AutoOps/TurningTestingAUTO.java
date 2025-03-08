@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 public class TurningTestingAUTO extends LinearOpMode {
     @Override
     public void runOpMode() {
-        telemetry.setMsTransmissionInterval(10);
+        telemetry.setMsTransmissionInterval(1);
         telemetry.addLine("Initialized!");
         PinkArm pinkArm = new PinkArm(hardwareMap,true);
         waitForStart();
@@ -32,24 +32,23 @@ public class TurningTestingAUTO extends LinearOpMode {
         Pose2d initialPose = Config.initialBluePose;
         HyperMecanumDrive hyperMecanumDrive = new HyperMecanumDrive(hardwareMap,initialPose);
 
-        double turnAmountRadians = Math.toRadians(270);
-
         //Create and start the telemetry thread
         @SuppressLint("DefaultLocale") Thread telemetryThread = new Thread(() -> {
             while (!isStopRequested()) {
-                telemetry.addLine("Intake Power: " + pinkArm.intakeServo.getPower());
-
-
+                telemetry.addLine("Deviation = " + hyperMecanumDrive.deviation);
+                telemetry.addLine("Linear Velocity = " + hyperMecanumDrive.linearVelocity);
+                telemetry.addLine("Time = " + Utils.roundAsString(hyperMecanumDrive.time,1));
+                telemetry.addLine("Time expected = " + Utils.roundAsString(hyperMecanumDrive.expectedTime,1));
                 telemetry.update();
             }
         });
 
         telemetryThread.start();
-        double heading = Math.toRadians(270);
+        double heading = Math.toRadians(180);
 
-        TrajectoryActionBuilder drivetrainTrajectory = hyperMecanumDrive.actionBuilder(initialPose);
-                //.turnTo(heading); //TODO: Research, this action "fails requirement??"
-        //TODO: Mabye we are using the command made for tank? https://rr.brott.dev/docs/v1-0/actions/
+        TrajectoryActionBuilder drivetrainTrajectory = hyperMecanumDrive.actionBuilder(initialPose)
+                .turn(heading);
+
         Action dtPath = drivetrainTrajectory.build();
 
         Action intake = new SequentialAction(
@@ -59,15 +58,10 @@ public class TurningTestingAUTO extends LinearOpMode {
         );
 
         Actions.runBlocking(
-              intake
+                new SequentialAction(
+                        dtPath
+                )
         );
-
-        //        // Stop the telemetry thread
-        //        try {
-        //            telemetryThread.join();
-        //        } catch (InterruptedException e) {
-        //            Thread.currentThread().interrupt();
-        //        }
 
     }
 

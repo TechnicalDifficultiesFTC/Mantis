@@ -29,7 +29,8 @@ public class Hypothetical_ThreePieceAUTO_BLUE {
                                 .waitSeconds(actionsDelay) //Pick up piece infront of us
 
                                 //Return to basket
-                                .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(90))
+
+                                .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(45))
 
                                 //Alignment to piece 2
                                 .back(5)
@@ -38,7 +39,7 @@ public class Hypothetical_ThreePieceAUTO_BLUE {
                                 .waitSeconds(actionsDelay)
 
                                 //Return to basket
-                                .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(90))
+                                .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(45))
                                 .waitSeconds(actionsDelay)
                                 //Build
                                 .build()

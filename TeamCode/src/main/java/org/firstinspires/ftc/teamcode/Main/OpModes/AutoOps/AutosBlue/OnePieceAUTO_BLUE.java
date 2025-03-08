@@ -15,7 +15,7 @@
     import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
     import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 
-    @Autonomous(name="MANTIS AUTO: One Piece BLUE", group="Linear OpMode")
+    @Autonomous(name="MANTIS AUTO: One Piece BLUE", group="Autonomous")
     public class OnePieceAUTO_BLUE extends LinearOpMode {
         @Override
         public void runOpMode() {

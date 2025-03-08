@@ -54,8 +54,15 @@ import java.util.List;
 
 @com.acmerobotics.dashboard.config.Config
 public final class HyperMecanumDrive {
+
+    public double deviation;
+    public double linearVelocity;
+    public double time;
+    public double expectedTime;
+
     public static class Params {
         // IMU orientation
+
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
@@ -71,8 +78,6 @@ public final class HyperMecanumDrive {
         public double kS = 0.9628526408514921;
         public double kV = 0.00009230809211040929;
 
-        //TODO: Consider restarting at 0.0000001
-        //TODO: CURRENT RR TUNING STEP; Manual feedfoward tuner
         public double kA = 0.00001;
 
         // path profile parameters (in inches)
@@ -85,7 +90,7 @@ public final class HyperMecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 0.0;
+        public double axialGain = 5.0;
         public double lateralGain = 0.0;
         public double headingGain = 0.0; // shared with turn
 
@@ -307,12 +312,18 @@ public final class HyperMecanumDrive {
             Condition B)
             Robot movement action exceeds timeout when trying to correct (timeout = 1 second)
              */
+
             boolean allowedToEndMovementAction =
                     (((t >= timeTrajectory.duration)
                             && (error.position.norm() <= Config.maximumDeviationFromPathInches)
                             && (robotVelRobot.linearVel.norm() < Config.maximumVelocityAllowedAtActionStop))
 
                     || (t >= timeTrajectory.duration+Config.timeoutDuration));
+
+            time = t;
+            expectedTime = timeTrajectory.duration;
+            linearVelocity = robotVelRobot.linearVel.norm();
+            deviation = error.position.norm();
 
             if (allowedToEndMovementAction) {
                 //Stop robot

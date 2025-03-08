@@ -14,8 +14,8 @@ public enum DeviceRegistry {
     INTAKE_SERVO("intakeServo"),
 
     COLOR_SENSOR("colorSensor"),
+
     //Encoders
-    //TODO: Change these names to whatever port motor they are plugged in with
     /*
     The direction of each Encoder is independent of the DcMotorEx it’s created with.
     Changing the direction of an Encoder has no effect on the direction of its associated DcMotorEx
@@ -23,7 +23,7 @@ public enum DeviceRegistry {
      */
     LEFT_THROUGHBORE_ENC(BACK_LEFT_MOTOR.str()),
     RIGHT_THROUGHBORE_ENC(FRONT_RIGHT_MOTOR.str()),
-    YAW_THROUGHBORE_ENC(BACK_RIGHT_MOTOR.str()),
+    YAW_THROUGHBORE_ENC(BACK_RIGHT_MOTOR.str()), //Yaw encoder should be positive leftwards, negative rightwards
 
     //IMU
     IMU("imu");

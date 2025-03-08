@@ -14,9 +14,6 @@ import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 @TeleOp(name="MANTIS V:1.5", group="Linear OpMode")
 
 public class StandardTeleop extends LinearOpMode {
-    OverflowEncoder perp;
-    OverflowEncoder par0;
-    OverflowEncoder par1;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -50,7 +47,7 @@ public class StandardTeleop extends LinearOpMode {
 
             //Telemetry
             telemetry.addLine("Overview: Online");
-            telemetry.addLine("motm: " + motm);
+            telemetry.addLine("MOTM: " + motm);
             telemetry.addLine("Uplink speed (MS): " + telemetry.getMsTransmissionInterval());
             telemetry.addLine("Low Power Mode Status (DT): " + drivetrain.isDrivetrainLowPowerMode());
             telemetry.addLine("Low Power Mode Status (CLIMB): " + climb.isClimbLowPowerMode());

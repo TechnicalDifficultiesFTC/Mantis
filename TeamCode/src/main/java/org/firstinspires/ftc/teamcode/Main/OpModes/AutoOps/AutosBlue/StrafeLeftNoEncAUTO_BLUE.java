@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 
-@Autonomous(name="MANTIS AUTO: Strafe Left no enc RED/BLUE", group="Linear OpMode")
+@Autonomous(name="MANTIS AUTO: Strafe Left no enc RED/BLUE", group="Autonomous")
 public class StrafeLeftNoEncAUTO_BLUE extends LinearOpMode {
 
     @Override
