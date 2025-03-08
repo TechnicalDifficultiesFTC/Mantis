@@ -12,6 +12,8 @@ public enum DeviceRegistry {
     CLIMB_MOTOR_RIGHT("climbTwo"),
     //Servos
     INTAKE_SERVO("intakeServo"),
+
+    COLOR_SENSOR("colorSensor"),
     //Encoders
     //TODO: Change these names to whatever port motor they are plugged in with
     /*

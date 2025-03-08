@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Main.OpModes.AutoOps;
+package org.firstinspires.ftc.teamcode.Main.OpModes.AutoOps.AutosBlue;
 
 import android.annotation.SuppressLint;
 
@@ -19,6 +19,9 @@ import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 public class ThreePieceAUTO_BLUE extends LinearOpMode {
     @Override
     public void runOpMode() {
+        //TODO: Rewrite return splines
+        //TODO: Calibrate mass PID's
+
         double actionsDelay = 2.5;
         telemetry.setMsTransmissionInterval(10);
         telemetry.addLine("Initialized!");

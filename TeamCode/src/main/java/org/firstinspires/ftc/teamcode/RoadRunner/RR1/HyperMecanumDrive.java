@@ -70,15 +70,15 @@ public final class HyperMecanumDrive {
         // feedforward parameters (in tick units)
         public double kS = 0.9628526408514921;
         public double kV = 0.00009230809211040929;
-        //TESTED VALUE AS OF 3/5/25: 0.00001
+
         //TODO: Consider restarting at 0.0000001
         //TODO: CURRENT RR TUNING STEP; Manual feedfoward tuner
-        public double kA = 0;
+        public double kA = 0.00001;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 50;
+        public double maxWheelVel = 60;
         public double minProfileAccel = -30;
-        public double maxProfileAccel = 50;
+        public double maxProfileAccel = 60;
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI; // shared with path
@@ -292,19 +292,37 @@ public final class HyperMecanumDrive {
                 t = Actions.now() - beginTs;
             }
 
-            if (t >= timeTrajectory.duration) {
-                leftFront.setPower(0);
-                leftBack.setPower(0);
-                rightBack.setPower(0);
-                rightFront.setPower(0);
-
-                return false;
-            }
-
             Pose2dDual<Time> txWorldTarget = timeTrajectory.get(t);
             targetPoseWriter.write(new PoseMessage(txWorldTarget.value()));
 
             PoseVelocity2d robotVelRobot = updatePoseEstimate();
+            Pose2d error = txWorldTarget.value().minusExp(pose);
+
+            //Movement actions will only end once these conditions are met
+            /*
+            Condition A)
+            Robot movement action will end when the action estimated time is 0 AND
+            When error is less then or equal to maximum deviation from path (1") AND
+            When robot velocity is less then the max velocity allowed at a stop (.5) OR
+            Condition B)
+            Robot movement action exceeds timeout when trying to correct (timeout = 1 second)
+             */
+            boolean allowedToEndMovementAction =
+                    (((t >= timeTrajectory.duration)
+                            && (error.position.norm() <= Config.maximumDeviationFromPathInches)
+                            && (robotVelRobot.linearVel.norm() < Config.maximumVelocityAllowedAtActionStop))
+
+                    || (t >= timeTrajectory.duration+Config.timeoutDuration));
+
+            if (allowedToEndMovementAction) {
+                //Stop robot
+                leftFront.setPower(0);
+                leftBack.setPower(0);
+                rightBack.setPower(0);
+                rightFront.setPower(0);
+                //End action
+                return false;
+            }
 
             PoseVelocity2dDual<Time> command = new HolonomicController(
                     PARAMS.axialGain, PARAMS.lateralGain, PARAMS.headingGain,
@@ -335,7 +353,6 @@ public final class HyperMecanumDrive {
             p.put("y", pose.position.y);
             p.put("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
 
-            Pose2d error = txWorldTarget.value().minusExp(pose);
             p.put("xError", error.position.x);
             p.put("yError", error.position.y);
             p.put("headingError (deg)", Math.toDegrees(error.heading.toDouble()));
@@ -354,6 +371,7 @@ public final class HyperMecanumDrive {
             c.setStrokeWidth(1);
             c.strokePolyline(xPoints, yPoints);
 
+            //Rerun action
             return true;
         }
 
@@ -488,6 +506,26 @@ public final class HyperMecanumDrive {
                 beginPose, 0.0,
                 defaultTurnConstraints,
                 defaultVelConstraint, defaultAccelConstraint
+        );
+    }
+
+    /**
+     * Lets get overloaded!
+     */
+    public TrajectoryActionBuilder actionBuilder(Pose2d beginPose, PoseMap poseMap) {
+        return new TrajectoryActionBuilder(
+                TurnAction::new,
+                FollowTrajectoryAction::new,
+                new TrajectoryBuilderParams(
+                        1e-6,
+                        new ProfileParams(
+                                0.25, 0.1, 1e-2
+                        )
+                ),
+                beginPose, 0.0,
+                defaultTurnConstraints,
+                defaultVelConstraint, defaultAccelConstraint,
+                poseMap
         );
     }
 }

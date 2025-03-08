@@ -1,4 +1,4 @@
-    package org.firstinspires.ftc.teamcode.Main.OpModes.AutoOps;
+    package org.firstinspires.ftc.teamcode.Main.OpModes.AutoOps.AutosBlue;
 
     import android.annotation.SuppressLint;
 

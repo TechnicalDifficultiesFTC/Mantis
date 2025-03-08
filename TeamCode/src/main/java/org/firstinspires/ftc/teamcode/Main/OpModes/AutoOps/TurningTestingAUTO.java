@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TurnConstraints;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -31,40 +32,34 @@ public class TurningTestingAUTO extends LinearOpMode {
         Pose2d initialPose = Config.initialBluePose;
         HyperMecanumDrive hyperMecanumDrive = new HyperMecanumDrive(hardwareMap,initialPose);
 
-        double turnAmountRadians = Math.toRadians(180);
+        double turnAmountRadians = Math.toRadians(270);
+
         //Create and start the telemetry thread
         @SuppressLint("DefaultLocale") Thread telemetryThread = new Thread(() -> {
             while (!isStopRequested()) {
-                double headingRadians = hyperMecanumDrive.pose.heading.toDouble();
-                double x = hyperMecanumDrive.pose.position.x;
-                double y = hyperMecanumDrive.pose.position.y;
+                telemetry.addLine("Intake Power: " + pinkArm.intakeServo.getPower());
 
-                telemetry.addLine("Telemetry is running...");
-                telemetry.addLine("Attempting to turn to (radians): " + turnAmountRadians);
-                telemetry.addLine("Attempting to turn to (degrees): " + Math.toDegrees(turnAmountRadians));
-                telemetry.addLine();
-                telemetry.addLine("Estimated pose heading (radians): " +  headingRadians);
-                telemetry.addLine("Estimated pose heading (degrees): " + Math.toDegrees(headingRadians));
-                telemetry.addLine("Estimated pose position: " + "\n("
-                        + Utils.roundAsString(x,3) + ","
-                        + Utils.roundAsString(y,3) + ")");
+
                 telemetry.update();
             }
         });
 
         telemetryThread.start();
+        double heading = Math.toRadians(270);
 
-        //PinkArm pinkArm = new PinkArm(hardwareMap,true);
-        TrajectoryActionBuilder drivetrainTrajectory = hyperMecanumDrive.actionBuilder(initialPose)
-                .turn(turnAmountRadians)
-                .waitSeconds(10);
+        TrajectoryActionBuilder drivetrainTrajectory = hyperMecanumDrive.actionBuilder(initialPose);
+                //.turnTo(heading); //TODO: Research, this action "fails requirement??"
+        //TODO: Mabye we are using the command made for tank? https://rr.brott.dev/docs/v1-0/actions/
         Action dtPath = drivetrainTrajectory.build();
 
+        Action intake = new SequentialAction(
+                pinkArm.intake(),
+                new SleepAction(.5),
+                pinkArm.stopIntake()
+        );
+
         Actions.runBlocking(
-                new SequentialAction(
-                        dtPath,
-                        pinkArm.bringArmToEscapeAngle()
-                )
+              intake
         );
 
         //        // Stop the telemetry thread

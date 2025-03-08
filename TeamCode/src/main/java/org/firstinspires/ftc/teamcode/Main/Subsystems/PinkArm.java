@@ -4,10 +4,10 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
@@ -24,6 +25,8 @@ import java.util.Objects;
 
 
 public class PinkArm extends Utils {
+    public boolean actionActive = false;
+    public final RevColorSensorV3 colorSensorV3;
     public final Encoder towerEncoder,slideEncoder;
     private final boolean runWithEncoders;
     public int pinkArmExtensionTicks = 0;
@@ -35,6 +38,7 @@ public class PinkArm extends Utils {
     public CRServo intakeServo;
     double towerMotorPower, slideMotorPower, intakeServoPower;
     public int towerMotorPos;
+    public boolean visionSensorInitialized;
 
     /**
      * Initialize PinkArm and pass in PinkArm motors and servo objects
@@ -45,7 +49,11 @@ public class PinkArm extends Utils {
         towerMotor = hardwareMap.dcMotor.get(DeviceRegistry.TOWER_MOTOR.str());
         slideMotor = hardwareMap.dcMotor.get(DeviceRegistry.SLIDE_MOTOR.str());
         intakeServo = hardwareMap.crservo.get(DeviceRegistry.INTAKE_SERVO.str());
+
+        colorSensorV3 = (RevColorSensorV3) hardwareMap.colorSensor.get(DeviceRegistry.COLOR_SENSOR.str());
         intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        this.visionSensorInitialized = colorSensorV3.initialize();
 
         if (runWithEncoders) {
             towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -65,6 +73,10 @@ public class PinkArm extends Utils {
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //Direction changes:
+        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        towerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         //Reconsidered. I love overflow encoders!
         towerEncoder = new OverflowEncoder(new RawEncoder((DcMotorEx) towerMotor));
         slideEncoder = new OverflowEncoder(new RawEncoder((DcMotorEx) slideMotor));
@@ -72,33 +84,50 @@ public class PinkArm extends Utils {
     /*
     ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
      */
-    private class Outtake implements Action {
-        private boolean initialized = false;
 
+    private class StopIntake implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            if (!initialized) {
-                intakeServo.setPower(Config.SERVO_OUTTAKE_POWER);
-                initialized = true;
-            }
-            new SleepAction(.5);
+            actionActive = true;
+
             intakeServo.setPower(0);
-            return false;
+            if (intakeServo.getPower() != 0) {
+                return true;
+            }
+            else {
+                actionActive = false;
+                return false;
+            }
+        }
+    }
+    private class Outtake implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            actionActive = true;
+            intakeServo.setPower(Config.SERVO_OUTTAKE_POWER);
+            if (intakeServo.getPower() != Config.SERVO_OUTTAKE_POWER) {
+                return true;
+            }
+            else {
+                actionActive = false;
+                return false;
+            }
         }
     }
 
     private class Intake implements Action {
-        private boolean initialized = false;
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            if (!initialized) {
-                intakeServo.setPower(Config.SERVO_INTAKE_POWER);
-                initialized = true;
+            actionActive = true;
+
+            intakeServo.setPower(Config.SERVO_INTAKE_POWER);
+            if (intakeServo.getPower() != Config.SERVO_INTAKE_POWER) {
+                return true;
             }
-            //TODO: Add check to reference color sensor to see if we already have a piece in
-            new SleepAction(.5);
-            intakeServo.setPower(0);
-            return false;
+            else {
+                actionActive = false;
+                return false;
+            }
         }
     }
 
@@ -108,6 +137,7 @@ public class PinkArm extends Utils {
      */
     private class RaiseArmToHighBasket implements Action {
         boolean initialized = false;
+
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             DcMotor.RunMode tempMode = null;
@@ -151,6 +181,10 @@ public class PinkArm extends Utils {
     /*
     ------------------------------------------------------------------------------------ ACTIONS METHODS ZONE ------------------------------------------------------------------------------------
      */
+
+    public Action stopIntake() {
+        return new StopIntake();
+    }
 
     public Action intake() {
         return new Intake();
@@ -203,8 +237,18 @@ public class PinkArm extends Utils {
 
     }
 
-    public boolean pinkArmHasExceededBounds() {
-        return (pinkArmExtensionTicks < -2770);
+    public boolean isPieceVisible() {
+        double distance = getVisionSensorDistanceInches();
+        return distance < Config.criticalVisionSensorThresholdDistance;
+    }
+
+    public double getVisionSensorDistanceInches() {
+        return colorSensorV3.getDistance(DistanceUnit.INCH); //Returns distance in inches
+    }
+    public String getVisionStatusToString(){
+        return ("Vision Sensor Distance: " + getVisionSensorDistanceInches() + "\n" +
+                "Piece Visible?: " + isPieceVisible() + "\n" +
+                "Vision Sensor Color: " + colorSensorV3.argb());
     }
 
     /**
@@ -213,21 +257,32 @@ public class PinkArm extends Utils {
      * @return True if the pink arm extension limit should be applied, False if the pink arm extension limit shouldn't be
      */
     public boolean pinkArmExtensionLimitShouldBeApplied() {
-        return !(pinkArmRotationalTicks > Config.pinkArmExtensionLimitTicks);
+        boolean pinkArmBehindLimit = isPinkArmExtensionLimitInEffect();
+        boolean pinkArmHasExceededExtensionLimit = (pinkArmExtensionTicks < Config.pinkArmExtensionLimitTicks);
+        return (pinkArmBehindLimit && pinkArmHasExceededExtensionLimit);
     }
+
+    public boolean isPinkArmExtensionLimitInEffect() {
+        return (pinkArmRotationalTicks > Config.pinkArmDegrees_ApplyExtensionLimit_InTicks);
+    }
+
     public void setArmPowers(@NonNull Gamepad gamepad) {
         pinkArmExtensionTicks = slideMotor.getCurrentPosition();
         pinkArmRotationalTicks = towerMotor.getCurrentPosition();
 
-        if (pinkArmHasExceededBounds() && pinkArmExtensionLimitShouldBeApplied()) {
-            slideMotor.setPower(-1);
+        //TODO: Consider moving monitor onto its own thread
+        if (pinkArmExtensionLimitShouldBeApplied()) {
+            slideMotor.setTargetPosition(pinkArmExtensionTicks-25);
+            slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+        else {
+            slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideMotorPower = gamepad.left_stick_y;
+            slideMotor.setPower(slideMotorPower);
 
-        slideMotorPower = gamepad.left_stick_y;
-        slideMotor.setPower(slideMotorPower);
-
-        towerMotorPower = (gamepad.left_trigger - gamepad.right_trigger);
-        towerMotor.setPower(towerMotorPower);
+            towerMotorPower = (gamepad.left_trigger - gamepad.right_trigger);
+            towerMotor.setPower(towerMotorPower);
+        }
     }
     public void setArmPowersUsingEncoder(@NonNull Gamepad gamepad) {
         leftTriggerPressed = triggerBoolean(gamepad.left_trigger);
@@ -265,7 +320,12 @@ public class PinkArm extends Utils {
         }
         intakeServo.setPower(intakeServoPower);
     }
-    public double getTowerMotorHypotheticalPos() {
+
+    /**
+     * "If its a hypothetical variable you give it a hat"
+     * @return Hypothetical towerMotorPos
+     */
+    public double getTowerMotorPoseHat() {
         return towerMotorPos;
     }
 

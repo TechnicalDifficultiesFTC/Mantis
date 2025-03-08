@@ -42,8 +42,8 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, DeviceRegistry.LEFT_THROUGHBORE_ENC.str())));
         par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, DeviceRegistry.RIGHT_THROUGHBORE_ENC.str())));
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, DeviceRegistry.YAW_THROUGHBORE_ENC.str())));
-
-        perp.setDirection(DcMotorSimple.Direction.FORWARD);
+        //Yes this is redundant, Yes I want the robot to be able to turn in auto >:(
+        perp.setDirection(DcMotorSimple.Direction.REVERSE);
         par1.setDirection(DcMotorSimple.Direction.FORWARD);
         par0.setDirection(DcMotorSimple.Direction.FORWARD);
 
