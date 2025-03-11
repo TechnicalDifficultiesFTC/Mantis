@@ -113,7 +113,7 @@ public class Climb {
         setArmsPower(climbLockDown ? Config.CLIMB_LOCK_DOWN_POWER : gamepad.right_stick_y);
     }
 
-    public String toString() {
+    public String climbStatusAsString() {
         return ("Climb Encoders: \n" +
                 "Climb Motor Left Position: " + climbMotorLeft.getCurrentPosition() + "\n" +
                 "Climb Motor Right Position: " + climbMotorRight.getCurrentPosition());

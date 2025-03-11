@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Main.Subsystems.Climb;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 
-@TeleOp(name="ARM_DEBUGGER", group="Linear OpMode")
+@TeleOp(name="Subsystems Testing", group="Secondary OpMode")
 public class SubsystemsTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         //TODO: Make sure that in arm testing we are reinitializing encoders
@@ -52,11 +52,11 @@ public class SubsystemsTesting extends LinearOpMode {
             pinkArm.processInput(gamepad2); //Contains telemetry data
 
             //Display encoders position and velocity of pinkarm
-            telemetry.addLine(pinkArm.toString());
+            telemetry.addLine(pinkArm.armStatusAsString());
             telemetry.addLine();
-            telemetry.addLine(climb.toString());
+            telemetry.addLine(climb.climbStatusAsString());
             telemetry.addLine();
-            telemetry.addLine(pinkArm.getVisionStatusToString());
+            telemetry.addLine(pinkArm.getVisionStatusAsString());
 
             if (Config.SHOW_ARM_STATUS) {
                 telemetry.addLine();

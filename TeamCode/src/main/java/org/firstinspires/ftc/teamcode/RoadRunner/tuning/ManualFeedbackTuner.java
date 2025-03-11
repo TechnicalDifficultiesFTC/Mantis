@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.RoadRunner.RR1.TwoDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.RoadRunner.RR1.TwoDeadWheelLocalizer;
 
 public final class ManualFeedbackTuner extends LinearOpMode {
-    public static double DISTANCE = 64;
+    public static double DISTANCE = 48;
 
     @Override
     public void runOpMode() throws InterruptedException {

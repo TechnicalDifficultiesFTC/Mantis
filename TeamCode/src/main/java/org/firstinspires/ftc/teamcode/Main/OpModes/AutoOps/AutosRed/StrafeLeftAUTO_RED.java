@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 
-@Autonomous(name="MANTIS AUTO: Strafe Left RED", group="Autonomous")
+@Autonomous(name="MANTIS AUTO: Strafe Left RED", group="AutonomousRed")
 public class StrafeLeftAUTO_RED extends LinearOpMode {
     @Override
     public void runOpMode() {

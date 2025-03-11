@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Main.OpModes.AutoOps.AutosBlue;
+package org.firstinspires.ftc.teamcode.Main.OpModes.AutoOps;
 
 import android.annotation.SuppressLint;
 
@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 
-@Autonomous(name="MANTIS AUTO: Strafe Left no enc RED/BLUE", group="Autonomous")
+@Autonomous(name="MANTIS AUTO: Strafe Left no enc RED/BLUE", group="AutonomousAnonymous")
 public class StrafeLeftNoEncAUTO_BLUE extends LinearOpMode {
 
     @Override

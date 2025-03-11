@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Main.Subsystems.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Subsystems.PinkArm;
 
-@TeleOp(name="MANTIS V:1.5", group="Linear OpMode")
+@TeleOp(name="MANTIS V:1.52", group="Primary OpMode")
 
 public class StandardTeleop extends LinearOpMode {
 
@@ -40,22 +40,20 @@ public class StandardTeleop extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) { //Primary loop
+
             //Send input to subsystems from processing
             drivetrain.processInput(gamepad1);
             pinkArm.processInput(gamepad2);
             climb.processInput(gamepad2);
 
             //Telemetry
-            telemetry.addLine("Overview: Online");
+            telemetry.addLine("Overview: Online | Uplink Speed = " + telemetry.getMsTransmissionInterval());
             telemetry.addLine("MOTM: " + motm);
-            telemetry.addLine("Uplink speed (MS): " + telemetry.getMsTransmissionInterval());
             telemetry.addLine("Low Power Mode Status (DT): " + drivetrain.isDrivetrainLowPowerMode());
             telemetry.addLine("Low Power Mode Status (CLIMB): " + climb.isClimbLowPowerMode());
             telemetry.addLine();
             telemetry.addLine("Climb lockdown status: " + climb.isClimbLockedDown());
-            telemetry.addLine("Tower Motor Pos: " + pinkArm.getTowerMotorPoseHat());
             telemetry.addLine();
-            telemetry.addLine("Slide arm extension (ticks): " + pinkArm.pinkArmExtensionTicks);
             telemetry.addLine("Slide arm extension limit in effect?: " + pinkArm.isPinkArmExtensionLimitInEffect());
             telemetry.addLine("Slide arm extension limit reached?: " + pinkArm.pinkArmExtensionLimitShouldBeApplied());
             telemetry.addLine();

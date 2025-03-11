@@ -5,6 +5,17 @@ import org.firstinspires.ftc.teamcode.RoadRunner.RR1.HyperMecanumDrive;
 import java.util.Random;
 
 public class Utils {
+    public static void halt(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+    public static double roundAsDouble(double input, int decimalPlaces) {
+        double scale = Math.pow(10, decimalPlaces);
+        return Math.round(input * scale) / scale;
+    }
 
     /**
      * Rounds the input to the amount of decimal places provided as the (int) second parameter
@@ -13,7 +24,8 @@ public class Utils {
      * @return Formatted string of double rounded
      */
     public static String roundAsString(double input, int decimalPlacesToRoundTo) {
-        return String.format("%."+decimalPlacesToRoundTo+"f", input);
+        double rounded = roundAsDouble(input, decimalPlacesToRoundTo);
+        return String.format("%."+decimalPlacesToRoundTo+"f", rounded);
     }
     /**
      * Generates a random "MOTM" to display on the telemetry feed, just for fun, servos no real purpose

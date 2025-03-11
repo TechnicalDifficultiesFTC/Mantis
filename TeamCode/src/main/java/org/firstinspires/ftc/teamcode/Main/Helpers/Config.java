@@ -13,9 +13,9 @@ public class Config {
     MISC:
      */
 
-    public static double maximumDeviationFromPathInches = .5;
-    public static double maximumVelocityAllowedAtActionStop = 1;
-    public static double timeoutDuration = 2;
+    public static double maximumDeviationFromPathInches = 1;
+    public static double maximumVelocityAllowedAtActionStop = 3;
+    public static double timeoutDuration = 1;
     /*
     ---------------------------------------------------------------- Subsystems Testing Triggers ----------------------------------------------------------------
      */
@@ -49,11 +49,11 @@ public class Config {
     ---------------------------------------------------------------- Motor Directions (DT) ----------------------------------------------------------------
      */
 
-     /*
-    ---------------------------------------------------------------- TELEOP ZONE ----------------------------------------------------------------
-     */
-     //Used in beaUtils.triggerBoolean() to determine the amount a trigger needs to be pressed to return true
-     public static final double TRIGGER_THRESHOLD = .1;
+    /*
+   ---------------------------------------------------------------- TELEOP ZONE ----------------------------------------------------------------
+    */
+    //Used in beaUtils.triggerBoolean() to determine the amount a trigger needs to be pressed to return true
+    public static final double TRIGGER_THRESHOLD = .1;
 
     //Used for software underclock
     public static double MIN_CLIMB_SPEED = .5; //Negative because reversal
@@ -66,6 +66,7 @@ public class Config {
     //End effector servo
     public static double SERVO_OUTTAKE_POWER = -.7;
     public static double SERVO_INTAKE_POWER = 1;
+    public static double SERVO_RETAINING_POWER = SERVO_INTAKE_POWER/2;
 
     /*
     ---------------------------------------------------------------- TELEOP ZONE ----------------------------------------------------------------
@@ -97,21 +98,22 @@ public class Config {
     public static int pinkArmExtensionAmountSlides_ToReachPieceInAuto_InTicks = 1400; //Ticks to extend the slides to in order to reach sample in auto
     public static int pinkArmExtensionAmountSlides_ToReachHighBasket_InTicks = 3250;
     public static int pinkArmExtensionAmountSlides_TillSafeToDescend_InTicks = 0; //TODO: FILL IN
-    public static int pinkArmEscapeAmount_InTicks = 420; //Goes up pinkArmEscapeAmount ticks before arm can extend
-    public static int climbArmsExtensionAmount_InTicks = 0; //TODO: FILL IN
 
+    public static int pinkArmDegreesRotation_EscapeAmount_InTicks = 420; //Goes up pinkArmEscapeAmount ticks before arm can extend
+    public static int climbArmsExtensionAmount_InTicks = 0; //TODO: FILL IN
 
     /*
     ---------------------------------------------------------------- COLOR SENSOR CONFIGS ----------------------------------------------------------------
      */
-    public static double criticalVisionSensorThresholdDistance = 0; //TODO: CALIBRATE
+    // w/o piece should be hovering around 4.0-4.5
+    public static double criticalVisionSensorThresholdDistance = 2.4525;
 
     /*
     ---------------------------------------------------------------- COLOR SENSOR CONFIGS ----------------------------------------------------------------
      */
 
     //The initial pose listed below looks like this: https://drive.google.com/file/d/1Utc5_G4_l_5cw0eufCwzscnooBlsDLXZ/view?usp=sharing
-    public static Pose2d initialBluePose = new Pose2d(20,62,Math.toRadians(270));
+    public static Pose2d initialBluePose = new Pose2d(20, 62, Math.toRadians(270));
 
     /*
     ---------------------------------------------------------------- LIMITS ZONE ----------------------------------------------------------------

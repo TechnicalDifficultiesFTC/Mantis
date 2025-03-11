@@ -90,9 +90,9 @@ public final class HyperMecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 5.0;
-        public double lateralGain = 0.0;
-        public double headingGain = 0.0; // shared with turn
+        public double axialGain = 2.0;
+        public double lateralGain = 2.0;
+        public double headingGain = 32.5; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -318,7 +318,7 @@ public final class HyperMecanumDrive {
                             && (error.position.norm() <= Config.maximumDeviationFromPathInches)
                             && (robotVelRobot.linearVel.norm() < Config.maximumVelocityAllowedAtActionStop))
 
-                    || (t >= timeTrajectory.duration+Config.timeoutDuration));
+                    || (t >= timeTrajectory.duration + Config.timeoutDuration));
 
             time = t;
             expectedTime = timeTrajectory.duration;
