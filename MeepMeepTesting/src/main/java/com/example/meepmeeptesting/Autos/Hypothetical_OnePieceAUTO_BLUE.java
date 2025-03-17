@@ -18,13 +18,12 @@ public class Hypothetical_OnePieceAUTO_BLUE {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(
                         drive -> drive.trajectorySequenceBuilder(initialPose)
-                                //.waitSeconds(5)
-                                .setTangent(Math.toRadians(0))
-                                .splineToSplineHeading(new Pose2d(56,56,Math.toRadians(45)), Math.toRadians(90)) //To basket
-                                .waitSeconds(actionsDelay)
+                                //To basket
+                                .setTangent(Math.toRadians(45))
+                                .splineToSplineHeading(new Pose2d(58,52,Math.toRadians(45)), Math.toRadians(90))
+                                //To climb
                                 .turn(Math.toRadians(225))
                                 .strafeTo(new Vector2d(0,31))
-                                .waitSeconds(actionsDelay)
                                 .build()
                 );
 

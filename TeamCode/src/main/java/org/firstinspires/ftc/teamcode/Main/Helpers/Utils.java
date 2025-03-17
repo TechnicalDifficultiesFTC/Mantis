@@ -12,6 +12,7 @@ public class Utils {
             Thread.currentThread().interrupt();
         }
     }
+
     public static double roundAsDouble(double input, int decimalPlaces) {
         double scale = Math.pow(10, decimalPlaces);
         return Math.round(input * scale) / scale;

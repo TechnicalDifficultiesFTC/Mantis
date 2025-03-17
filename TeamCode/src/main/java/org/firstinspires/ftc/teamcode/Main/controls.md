@@ -18,7 +18,8 @@ Left trigger: Tower motor forward <br>
 Right trigger: Tower motor backwards <br>
 Square (x/▢): Toggle (climb's) low power mode <br>
 Circle (B/O): Toggle climb arm lockdown
-
+Cross (a/X): Zero arm encoders
+Triangle ()
 ### (Intake Servo)
 Left button: Intake Forwards <br>
 Right button: Intake Backwards

@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -38,7 +39,11 @@ public class SubsystemsTesting extends LinearOpMode {
                 (DcMotorEx) hardwareMap.dcMotor.get(DeviceRegistry.YAW_THROUGHBORE_ENC.str())));
         par0.setDirection(DcMotorSimple.Direction.FORWARD);
         par1.setDirection(DcMotorSimple.Direction.FORWARD);
-        perp.setDirection(DcMotorSimple.Direction.FORWARD);
+        perp.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        pinkArm.towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        pinkArm.slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {

@@ -17,14 +17,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 import org.firstinspires.ftc.teamcode.Main.Helpers.TowerPosMovementStatus;
 
-import java.util.Objects;
-
-
 public class PinkArm extends Utils {
+
+    private Debounce debounceA;
     public boolean actionActive = false;
     public final RevColorSensorV3 colorSensorV3;
     public final Encoder towerEncoder,slideEncoder;
@@ -44,6 +44,8 @@ public class PinkArm extends Utils {
      * Initialize PinkArm and pass in PinkArm motors and servo objects
      */
     public PinkArm (HardwareMap hardwareMap, boolean runWithEncoders) {
+        debounceA = new Debounce();
+
         this.runWithEncoders = runWithEncoders;
 
         towerMotor = hardwareMap.dcMotor.get(DeviceRegistry.TOWER_MOTOR.str());
@@ -76,8 +78,6 @@ public class PinkArm extends Utils {
             slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-
-
         //Set zeropowermode of both motors to brake
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -94,6 +94,53 @@ public class PinkArm extends Utils {
     /*
     ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
      */
+
+//    public void intake() {
+//        intakeServo.setPower(Config.SERVO_INTAKE_POWER);
+//    }
+//
+//    public void outtake() {
+//        intakeServo.setPower(Config.SERVO_OUTTAKE_POWER);
+//    }
+//
+//    public void stopIntake() {
+//        intakeServo.setPower(0);
+//    }
+
+//    public void bringArmToEscape() {
+//        towerMotor.setTargetPosition(Config.pinkArmDegreesRotation_EscapeAmount_InTicks);
+//        towerMotor.setPower(Config.autosActionPower);
+//        while (HyperOnePiece_AUTO.opModeIsActive) {
+//            if (towerMotor.getCurrentPosition() == Config.pinkArmDegreesRotation_EscapeAmount_InTicks) {
+//                return;
+//            }
+//        }
+//    }
+//
+//    public void extendArmToBoundary() {
+//        slideMotor.setTargetPosition(Config.pinkArmExtensionAmountSlides_TillSafeToDescend_InTicks);
+//        slideMotor.setPower(Config.autosActionPower);
+//        while (HyperOnePiece_AUTO.opModeIsActive) {
+//            if (slideMotor.getCurrentPosition() == Config.pinkArmExtensionAmountSlides_TillSafeToDescend_InTicks) {
+//                return;
+//            }
+//        }
+//    }
+//
+//    public void raiseArmToHighBasket() {
+//        towerMotor.setTargetPosition(Config.pinkArmDegreesRotation_HighBasket_InTicks);
+//        towerMotor.setPower(Config.autosActionPower);
+//
+//        while (HyperOnePiece_AUTO.opModeIsActive) {
+//            if (towerMotor.getCurrentPosition() == Config.pinkArmDegreesRotation_HighBasket_InTicks) {
+//                return;
+//            }
+//        }
+//    }
+
+
+
+
 
     private class StopIntake implements Action {
         @Override
@@ -135,20 +182,10 @@ public class PinkArm extends Utils {
     }
 
     private class IntakeRetainPieceMode implements Action {
-        boolean initialized = false;
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            if (!initialized) {
-                intakeServo.setPower(Config.SERVO_RETAINING_POWER);
-            }
-
-            if (intakeServo.getPower() != Config.SERVO_RETAINING_POWER) {
-                intakeServo.setPower(Config.SERVO_RETAINING_POWER);
-                return true;
-            }
-            else {
-                return false;
-            }
+            intakeServo.setPower(Config.SERVO_RETAINING_POWER);
+            return false;
         }
     }
     private class IntakeUntilPieceDetected implements Action {
@@ -177,24 +214,15 @@ public class PinkArm extends Utils {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            DcMotor.RunMode tempMode = null;
             if (!initialized) {
-                if (towerMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) { //If tower in wrong mode
-                    tempMode = towerMotor.getMode(); //Store for later reset
-                    towerMotor.setTargetPosition(Config.pinkArmDegreesRotation_HighBasket_InTicks); //Sets tower motor to reach to high basket
-                    towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //Set to right more (will be reset later)
-                }
+                towerMotor.setTargetPosition(Config.pinkArmDegreesRotation_HighBasket_InTicks);
+                towerMotor.setPower(Config.autosActionPower);
             }
 
             if (towerMotor.getCurrentPosition() == Config.pinkArmDegreesRotation_HighBasket_InTicks) {
-                if (Objects.nonNull(tempMode)) {
-                    towerMotor.setMode(tempMode);
-                }
                 return false;
             }
-            else {
-                return true;
-            }
+            return true;
         }
     }
 
@@ -204,11 +232,14 @@ public class PinkArm extends Utils {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (!initialized) {
                 towerMotor.setTargetPosition(Config.pinkArmDegreesRotation_EscapeAmount_InTicks);
-                towerMotor.setPower(.5);
+                towerMotor.setPower(Config.autosActionPower);
                 initialized = true;
             }
             //Rerun until the amount of ticks is reached
             if (towerMotor.getCurrentPosition() == Config.pinkArmDegreesRotation_EscapeAmount_InTicks) {
+                slideMotor.setTargetPosition(0);
+                slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideMotor.setPower(Config.slideMotorAutoPower);
                 return false;
             }
             return true;
@@ -216,13 +247,13 @@ public class PinkArm extends Utils {
 
     }
 
-    private class extendPinkArm implements Action {
+    private class ExtendPinkArmToReachPiece implements Action {
         boolean initialized = false;
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (!initialized) {
                 slideMotor.setTargetPosition(Config.pinkArmExtensionLimitTicks); //TODO: Find how much we ACTUALLY need in auto
-                slideMotor.setPower(.75);
+                slideMotor.setPower(Config.autosActionPower);
             }
             if (slideMotor.getCurrentPosition() < (Config.pinkArmExtensionLimitTicks)) { //While pinkArm is not at expected position
                 return true;
@@ -233,6 +264,84 @@ public class PinkArm extends Utils {
         }
     }
 
+    private class ExtendPinkArmPastBoundary implements Action {
+        boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (!initialized) {
+                slideMotor.setTargetPosition(Config.pinkArmExtensionAmountSlides_TillSafeToDescend_InTicks);
+                slideMotor.setPower(Config.autosActionPower);
+                initialized = true;
+            }
+
+            if (slideMotor.getCurrentPosition() == Config.pinkArmExtensionAmountSlides_TillSafeToDescend_InTicks) {
+                return false;
+            }
+
+            return true;
+
+        }
+    }
+
+    private class DescendPinkArmToReachGround implements Action {
+        boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (!initialized) {
+                towerMotor.setTargetPosition(Config.pinkArmDegreesRotation_ToTouchGround);
+                towerMotor.setPower(Config.autosActionPower);
+                initialized = true;
+            }
+
+            if (towerMotor.getCurrentPosition() != Config.pinkArmDegreesRotation_ToTouchGround) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+
+
+    private class ReachTowardsHighBasket implements Action {
+        boolean initalized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (!initalized) {
+                slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideMotor.setTargetPosition(Config.pinkArmExtensionAmountSlides_ToReachHighBasket_InTicks);
+                slideMotor.setPower(Config.autosActionPower);
+            }
+
+            if (slideMotor.getCurrentPosition() == Config.pinkArmExtensionAmountSlides_ToReachHighBasket_InTicks) {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    private class ExtendSlightlyPastBoundary implements Action {
+        boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (!initialized) {
+                slideMotor.setTargetPosition(Config.pinkArmExtensionAmountSlides_TillSafeToRaise_InTicks);
+                slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slideMotor.setPower(Config.slideMotorAutoPower);
+                initialized = true;
+            }
+
+            if (slideMotor.getCurrentPosition() == Config.pinkArmExtensionAmountSlides_TillSafeToRaise_InTicks) {
+                return false;
+            }
+
+            return true;
+
+        }
+    }
+
     /*
     ------------------------------------------------------------------------------------ ACTIONS ZONE ------------------------------------------------------------------------------------
      */
@@ -240,12 +349,23 @@ public class PinkArm extends Utils {
     /*
     ------------------------------------------------------------------------------------ ACTIONS METHODS ZONE ------------------------------------------------------------------------------------
      */
-
+    public Action extendSlightlyPastBoundary() {
+        return new ExtendSlightlyPastBoundary();
+    }
+    public Action reachTowardsHighBasket() {
+        return new ReachTowardsHighBasket();
+    }
+    public Action descendPinkArmToReachGround() {
+        return new DescendPinkArmToReachGround();
+    }
+    public Action extendPinkArmPastBoundary() {
+        return new ExtendPinkArmPastBoundary();
+    }
     public Action intakeToRetainPiece() {
         return new IntakeRetainPieceMode();
     }
-    public Action extendPinkArm() {
-        return new extendPinkArm();
+    public Action extendPinkArmToReachPiece() {
+        return new ExtendPinkArmToReachPiece();
     }
 
     public Action intakeUntilPieceDetected() {
@@ -295,9 +415,17 @@ public class PinkArm extends Utils {
      */
     public void processInput(Gamepad gamepad) {
 
-        if (!runWithEncoders) { //Standard Mode
+        if (!Config.encodersMode) { //Standard Mode
             setIntakeServoPower(gamepad);
             setArmPowers(gamepad);
+
+            if (debounceA.isPressed(gamepad.a)) {
+                slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                towerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
         }
         else {
             setIntakeServoPower(gamepad);
@@ -334,25 +462,24 @@ public class PinkArm extends Utils {
         return (pinkArmRotationalTicks < Config.pinkArmDegrees_ApplyExtensionLimit_InTicks);
     }
 
-    public void setArmPowers(@NonNull Gamepad gamepad) {
+    public void setArmPowers(Gamepad gamepad) {
         pinkArmExtensionTicks = slideMotor.getCurrentPosition();
         pinkArmRotationalTicks = towerMotor.getCurrentPosition();
 
-        //TODO: Consider moving monitor onto its own thread
-        if (pinkArmExtensionLimitShouldBeApplied()) {
-            slideMotor.setTargetPosition(pinkArmExtensionTicks-25);
-            slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if (pinkArmExtensionLimitShouldBeApplied()) { // If TRUE apply extension limit, ELSE run normally
+            slideMotor.setTargetPosition(pinkArmExtensionTicks-25); //Moves pinkArm back 25 ticks
+            slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION); //Enforce pinkArm restriction
         }
-        else {
+        else { //Execute arm logic normally
             slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideMotorPower = -gamepad.left_stick_y;
             slideMotor.setPower(slideMotorPower);
-
-            towerMotorPower = (gamepad.right_trigger - gamepad.left_trigger);
-            towerMotor.setPower(towerMotorPower);
         }
+
+        towerMotorPower = (gamepad.right_trigger - gamepad.left_trigger);
+        towerMotor.setPower(towerMotorPower);
     }
-    public void setArmPowersUsingEncoder(@NonNull Gamepad gamepad) {
+    public void setArmPowersUsingEncoder(Gamepad gamepad) {
         leftTriggerPressed = triggerBoolean(gamepad.left_trigger);
         rightTriggerPressed = triggerBoolean(gamepad.right_trigger);
 
@@ -371,9 +498,10 @@ public class PinkArm extends Utils {
             towerPosMovementStatus = TowerPosMovementStatus.NOT_MOVING;
         }
 
-        slideMotorPower = gamepad.left_stick_y;
-
         towerMotor.setTargetPosition(towerMotorPos);
+        towerMotor.setPower(.15);
+
+        slideMotorPower = gamepad.left_stick_y;
         slideMotor.setPower(slideMotorPower);
     }
     public void setIntakeServoPower(Gamepad gamepad) {

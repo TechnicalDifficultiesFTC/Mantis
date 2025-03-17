@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Main.Subsystems;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Config;
 import org.firstinspires.ftc.teamcode.Main.Helpers.Debounce;
 import org.firstinspires.ftc.teamcode.Main.Helpers.DeviceRegistry;
+import org.firstinspires.ftc.teamcode.Main.Helpers.Utils;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,10 +11,10 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MecanumDrivetrain {
-    static DcMotor frontLeftMotor;
-    static DcMotor backLeftMotor;
-    static DcMotor frontRightMotor;
-    static DcMotor backRightMotor;
+    public DcMotor frontLeftMotor;
+    public DcMotor backLeftMotor;
+    public DcMotor frontRightMotor;
+    public DcMotor backRightMotor;
 
     double y;
     double x;
@@ -42,6 +43,8 @@ public class MecanumDrivetrain {
         frontRightMotor.setDirection(Config.FRONT_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(Config.BACK_LEFT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(Config.BACK_RIGHT_DT_MOTOR_FORWARD ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     /**
@@ -55,6 +58,52 @@ public class MecanumDrivetrain {
         backRightMotor.setZeroPowerBehavior(zeroPowerBehavior);
     }
 
+    //Turns 90 rightwards
+    public void turnWithTimeAndPower(double pow, double actionLen) {
+        frontLeftMotor.setPower(-pow);
+        backLeftMotor.setPower(-pow);
+
+        frontRightMotor.setPower(pow);
+        backRightMotor.setPower(pow);
+
+        Utils.halt((long) actionLen);
+    }
+
+    public void strafeRight(double pow,double actionLen) {
+        frontRightMotor.setPower(-pow);
+        backLeftMotor.setPower(-pow);
+
+        frontLeftMotor.setPower(pow);
+        backRightMotor.setPower(pow);
+        Utils.halt((long) actionLen);
+    }
+
+    public void halt(double timeHalt) {
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+        Utils.halt((long) timeHalt);
+    }
+
+    public void goForward(double pow,double actionLen) {
+        frontLeftMotor.setPower(pow);
+        backLeftMotor.setPower(pow);
+        frontRightMotor.setPower(pow);
+        backLeftMotor.setPower(pow);
+
+        Utils.halt((long) actionLen);
+    }
+
+    public void goBackwards(double pow, double actionLen) {
+        frontLeftMotor.setPower(-pow);
+        backLeftMotor.setPower(-pow);
+        backRightMotor.setPower(-pow);
+        frontRightMotor.setPower(-pow);
+
+        Utils.halt((long) actionLen);
+    }
     /**
      * Handle drivetrain logic and update motors as such
      * @param gamepad All input from gamepad (1)
